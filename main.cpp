@@ -17,8 +17,26 @@ int main()
     // 2. Remove an Event
     // 3. View Events
     // 4. Quit
+    
+    //cout << "----------------------------------------|----------------------------------------";
+    int userChoice;
+    do
+    {
+        cout << "\n\n----------------------------------Event Planner----------------------------------\n\n";
+        cout << "Main Menu" << endl << endl;
+        cout << "1. Add Event" << endl
+            << "2. Remove Event" << endl
+            << "3. View Events" << endl
+            << "4. Quit" << endl << endl;
 
-    cout << "----------------------------------------|----------------------------------------";
+        cout << "Please choose from the items above (1-4): ";
+        while(!(cin >> userChoice) || userChoice < 1 || userChoice > 4)
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Please enter a valid option: ";
+        }
+    } while(userChoice != 4);
 }
 
 /* void functionAdd()
@@ -33,4 +51,4 @@ int main()
 /* void functionDisplay
     Display All
     Display by Month
-    Display by day (still have to pick a month or maybe take two cins?)
+    Display by day (still have to pick a month or maybe take two cins?)*/
