@@ -7,6 +7,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -14,6 +15,7 @@ const int MONTHS = 12;
 
 void addEvent(bool);
 void setLeapYear(int &, bool &);    //Checks for year, sets whether leap-year for February-related considerations
+void saveUserData();
 
 int main()
 {
@@ -21,8 +23,6 @@ int main()
     string eventName[12][31];   // Store name of an event on a calendar date
     int eventHour[12][31];      // Store 24-hour format value for hour of event
     int eventMin[12][31];       // Store minute-specific time for event (00, 15, 30, 45)
-
-    // read arrays in from previous save files (this should be a menu item and function)
 
     int userChoice;
     int year = 0;
@@ -41,15 +41,15 @@ int main()
              << "5. Save Events" << endl << endl
              << "0. Quit" << endl << endl;
 
-        cout << "Please choose from the items above (1-4): ";
-        while(!(cin >> userChoice) || userChoice < 0 || userChoice > 5)
+        cout << "Please choose from the items above (1-5 or 0 to Quit): ";
+        while(!(cin >> userChoice) || userChoice < 0 || userChoice > 5)     //Get, validate userChoice
         {
             cin.clear();
             cin.ignore(1000, '\n');
             cout << "Please enter a valid option: ";
         }
 
-        switch(userChoice)
+        switch(userChoice)  //Each case represents a different main menu option
         {
             case 1: 
             {
@@ -65,7 +65,8 @@ int main()
             case 3: break;  // Sub-Menu: View all events? View by month?
             case 4: break;  // Use nested for loops to fill arrays from text files.
             case 5: break;  // Use nested for loops to use current arrays to overwrite save txts.
-            case 0: dummyStop = true; break;  // Can I set a flag for unsaved changes? And offer to save them before leaving?
+            case 0: dummyStop = true;
+                    break;  // Can I set a flag for unsaved changes? And offer to save them before leaving?
                             // Either way, this is where files are closed, goodbye message, and program exit.
             default: dummyStop = true; break;
         }
@@ -112,7 +113,6 @@ void addEvent(bool leapYear)
     {
         monthChoice = 31;
     }
-    //
 }
 
 /* void functionRemove()
@@ -148,16 +148,17 @@ void setLeapYear(int &year, bool &leapYear)
     }
 }
 
-/*int timeConvert(int asd)
+/*int timeConvert(int asd)*******************
 {
     This function will convert 24-hour ints to 12-hour AM/PM times
 }*/
 
-/*string meridianGen(int asd)
+/*string meridianGen(int asd)**********************
 {
     This function will be called at roughly the same time as timeConvert(), and will
     give a corresponding AM/PM to go along with the converted hour.
 }*/
+
 void loadUserData()
 {
     // Use a for loop to populate various parallel arrays with data
@@ -186,4 +187,11 @@ void loadUserData()
     // }
     // ..........You know, that ain't half bad?
     // This is a change to try and get this shit talking to Github.
+}
+
+void saveUserData()
+{
+    ofstream eventStorage
+    eventStorage.open("eventPresent.txt");
+    return;
 }
