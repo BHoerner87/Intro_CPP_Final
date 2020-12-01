@@ -17,7 +17,10 @@ void setLeapYear(int &, bool &);    //Checks for year, sets whether leap-year fo
 
 int main()
 {
-    // establish arrays
+    bool eventPresent[12][31];  // Store whether an event exists on a calendar date
+    string eventName[12][31];   // Store name of an event on a calendar date
+    int eventHour[12][31];      // Store 24-hour format value for hour of event
+    int eventMin[12][31];       // Store minute-specific time for event (00, 15, 30, 45)
 
     // read arrays in from previous save files (this should be a menu item and function)
 
@@ -39,7 +42,7 @@ int main()
              << "0. Quit" << endl << endl;
 
         cout << "Please choose from the items above (1-4): ";
-        while(!(cin >> userChoice) || userChoice < 1 || userChoice > 4)
+        while(!(cin >> userChoice) || userChoice < 0 || userChoice > 5)
         {
             cin.clear();
             cin.ignore(1000, '\n');
@@ -55,14 +58,14 @@ int main()
                     setLeapYear(year, leapYear);
                     leapYearSet = true;
                 }
-                addEvent();
+                addEvent(leapYear);
                 break;
             }
             case 2: setLeapYear(year, leapYear); break;
             case 3: break;  // Sub-Menu: View all events? View by month?
             case 4: break;  // Use nested for loops to fill arrays from text files.
             case 5: break;  // Use nested for loops to use current arrays to overwrite save txts.
-            case 0: break;  // Can I set a flag for unsaved changes? And offer to save them before leaving?
+            case 0: dummyStop = true; break;  // Can I set a flag for unsaved changes? And offer to save them before leaving?
                             // Either way, this is where files are closed, goodbye message, and program exit.
             default: dummyStop = true; break;
         }
@@ -101,7 +104,7 @@ void addEvent(bool leapYear)
             daysCount = 28;
         }
     }
-    else if(monthChoice == 4 || monthChoice == 6 || monthChoice = 9 || monthChoice == 11)
+    else if(monthChoice == 4 || monthChoice == 6 || monthChoice == 9 || monthChoice == 11)
     {
         daysCount = 30;
     }
