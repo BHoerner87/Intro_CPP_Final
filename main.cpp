@@ -30,7 +30,8 @@ int main()
     int year = 0;
     bool leapYearSet = false;
     bool leapYear;           
-    bool dummyStop;          
+    bool dummyStop;
+    bool unsavedChanges = false;
 
     do
     {
@@ -201,6 +202,10 @@ void loadUserData(bool eventPresent[][DAYS], string eventName[][DAYS],
                     readEventMin >> eventMin[m][d];
                 }
             }
+            readEventPresent.close();
+            readEventName.close();
+            readEventHour.close();
+            readEventMin.close();
             break;
         }
         case 2: break;
@@ -247,6 +252,10 @@ void saveUserData(bool eventPresent[][DAYS], string eventName[][DAYS],
                     writeEventMin << eventMin[m][d] << endl;
                 }
             }
+            writeEventPresent.close();
+            writeEventName.close();
+            writeEventHour.close();
+            writeEventMin.close();
             break;
         }
         case 2: break;
