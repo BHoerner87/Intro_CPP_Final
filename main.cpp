@@ -14,10 +14,12 @@ using namespace std;
 const int MONTHS = 12;
 const int DAYS = 31;
 
-void addEvent(bool);                // Adds events
-void setLeapYear(int &, bool &);    // Checks for year, sets whether leap-year for February-related considerations
+void addEvent(bool);            // Adds events
+void setLeapYear(int &, bool &);// Checks for year, sets whether leap-year for February-related considerations
 void saveUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  // Saves data
 void loadUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  // Loads data
+void displayMenu(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], string[MONTHS]);             // Shows a menu for display options
+int hourConvert(int);           // Converts 24-format hours to 12-hour for display purposes
 
 int main()
 {
@@ -25,6 +27,7 @@ int main()
     string eventName[12][31];   // Store name of an event on a calendar date
     int eventHour[12][31];      // Store 24-hour format value for hour of event
     int eventMin[12][31];       // Store minute-specific time for event (00, 15, 30, 45)
+    string monthNames[12];      // Store month names for output
 
     int userChoice;
     int year = 0;
@@ -32,6 +35,14 @@ int main()
     bool leapYear;           
     bool dummyStop;
     bool unsavedChanges = false;
+
+    ifstream monthData;             // Load month names into array from txt
+    monthData.open("months.txt");
+    for(int i = 0; i < MONTHS; i++)
+    {
+        monthData >> monthNames[i];
+    }
+    monthData.close();
 
     do
     {
@@ -125,8 +136,46 @@ void addEvent(bool leapYear)
         Which event? 1., 2., 3...
 */
 
-/* void functionDisplay
-    Display All
+void displayMenu(bool eventPresent[][DAYS], string eventName[][DAYS],  // Reads all user data to several txt files
+                  int eventHour[][DAYS], int eventMin[][DAYS], string monthNames[MONTHS])
+{
+    int userChoice;
+
+    cout << "\n\n----------------------------------Display Menu-----------------------------------\n\n";
+    cout << "1. Display All Events" << endl
+         << "2. Display Events by Month" << endl << endl
+         << "0. Cancel" << endl << endl;
+    cout << "Please enter your choice: ";
+    while(!(cin >> userChoice) || userChoice < 0 || userChoice > 2)     // while input bad, moar input
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    switch(userChoice)
+    {
+        case 1:
+        {
+            cout << "\n\n-------------------------------Display All Events--------------------------------\n\n";
+            int eventCounter;
+            for(int m = 0; m < MONTHS; m++)
+            {
+                for(int d = 0; d < DAYS; d++)
+                {
+                    if(eventPresent[m][d] == true)
+                    {
+                        cout << ++eventCounter << ". " << eventName[m][d] << " on " << monthNames[m] << " " << (d + 1)
+                             << " at " << hourConvert(eventHour[m][d]) << ":" << eventMin[m][d] << endl;
+                    }
+                }
+            }
+        }
+            break;
+        case 2: break;
+        case 0: break;
+    }
+}
+    /*Display All
     Display by Month
     Display by day (still have to pick a month or maybe take two cins?)*/
 
