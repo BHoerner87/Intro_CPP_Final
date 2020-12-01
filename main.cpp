@@ -14,9 +14,10 @@ using namespace std;
 const int MONTHS = 12;
 const int DAYS = 31;
 
-void addEvent(bool);
-void setLeapYear(int &, bool &);    //Checks for year, sets whether leap-year for February-related considerations
-void saveUserData(bool [][DAYS], string [][31], int [][31], int [][31]);
+void addEvent(bool);                // Adds events
+void setLeapYear(int &, bool &);    // Checks for year, sets whether leap-year for February-related considerations
+void saveUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  // Saves data
+void loadUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  // Loads data
 
 int main()
 {
@@ -43,7 +44,7 @@ int main()
              << "0. Quit" << endl << endl;
 
         cout << "Please choose from the items above (1-5 or 0 to Quit): ";
-        while(!(cin >> userChoice) || userChoice < 0 || userChoice > 5)     //Get, validate userChoice
+        while(!(cin >> userChoice) || userChoice < 0 || userChoice > 6)     //Get, validate userChoice
         {
             cin.clear();
             cin.ignore(1000, '\n');
@@ -64,8 +65,9 @@ int main()
             }
             case 2: setLeapYear(year, leapYear); break;
             case 3: break;  // Sub-Menu: View all events? View by month?
-            case 4: break;  // Use nested for loops to fill arrays from text files.
+            case 4: loadUserData(eventPresent, eventName, eventHour, eventMin); break;  // Use nested for loops to fill arrays from text files.
             case 5: saveUserData(eventPresent, eventName, eventHour, eventMin); break;  // Use nested for loops to use current arrays to overwrite save txts.
+            case 6: cout << "Sneaky test: the value of eventPresent[0][0] is: " << eventPresent[0][0] << endl; break;
             case 0: dummyStop = true;
                     break;  // Can I set a flag for unsaved changes? And offer to save them before leaving?
                             // Either way, this is where files are closed, goodbye message, and program exit.
@@ -160,34 +162,50 @@ void setLeapYear(int &year, bool &leapYear)
     give a corresponding AM/PM to go along with the converted hour.
 }*/
 
-void loadUserData()
+void loadUserData(bool eventPresent[][DAYS], string eventName[][DAYS],
+                  int eventHour[][DAYS], int eventMin[][DAYS])
 {
-    // Use a for loop to populate various parallel arrays with data
-    // This will include a string array for event names
-    //                  an int array for hours of events
-    //                  an int array for minutes of events
-    // The value for each of these will be assigned to the same calendar-based row-column layout: [12][31]
-    // For example, my birthday would look like this:
-    //              boolArr[11][7] = true
-    //              nameArr[11][7] = "Brian's Birthday";
-    //              hourArr[11][7] = 14
-    //              minArr[11][7] = 30
-    // I could print it out by writing
-    // cout << nameArr[11][7] << " is occurring at" << timeConvert(hourArr[11][7]) << ":"
-    //      << minArr[11][7] << meridianGen(hourArr[11][7]) << "." << endl;
-    // The above instances of this specific array element will be filled using variables.
-    // Boy, I've gone way off-track, huh? This is healthy, though.
-    // So say I'm using a nested for loop to like, look up events in December and this is the only one.
-    // for(int e = 0; e < dayCount; e++)
-    // {
-    //      if(boolArr[monthChoice][e] == true)
-    //      {
-    //          cout << nameArr[monthChoice][e] << " at " << timeConvert(hourArr[monthChoice][e]) <<
-    //               << ":" << minArr[monthChoice][e] << meridianGen(hourArr[monthChoice][e]) << "." << endl;
-    //      }
-    // }
-    // ..........You know, that ain't half bad?
-    // This is a change to try and get this shit talking to Github.
+    int userChoice;
+
+    ifstream readEventPresent;                     // Establish ifstream objects
+    ifstream readEventName;
+    ifstream readEventHour;
+    ifstream readEventMin;
+    
+    readEventPresent.open("eventPresent.txt");     // Open objects' .txt files
+    readEventName.open("eventName.txt");
+    readEventHour.open("eventHour.txt");
+    readEventMin.open("eventMin.txt");
+
+    cout << "\n\n------------------------------------Load Data------------------------------------\n\n";
+    cout << "1. Load Data" << endl
+         << "2. Cancel" << endl << endl;
+    cout << "Would you like to load your calendar data? (1-2): " << endl;
+    while(!(cin >> userChoice) || userChoice < 0 || userChoice > 2)     //Get, validate userChoice
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    switch(userChoice)
+    {
+        case 1:
+        {
+            for(int m = 0; m < MONTHS; m++)
+            {
+                for(int d = 0; d < DAYS; d++)
+                {
+                    readEventPresent >> eventPresent[m][d];
+                    readEventName >> eventName[m][d];
+                    readEventHour >> eventHour[m][d];
+                    readEventMin >> eventMin[m][d];
+                }
+            }
+            break;
+        }
+        case 2: break;
+    }
+    return;
 }
 
 void saveUserData(bool eventPresent[][DAYS], string eventName[][DAYS],
