@@ -152,10 +152,14 @@ void setLeapYear(int &year, bool &leapYear)
     }
 }
 
-/*int timeConvert(int asd)*******************
+int hourConvert(int hour)
 {
-    This function will convert 24-hour ints to 12-hour AM/PM times
-}*/
+    if(hour > 12)
+    {
+        hour -= 12;
+    }
+    return hour;
+}
 
 /*string meridianGen(int asd)**********************
 {
@@ -163,7 +167,7 @@ void setLeapYear(int &year, bool &leapYear)
     give a corresponding AM/PM to go along with the converted hour.
 }*/
 
-void loadUserData(bool eventPresent[][DAYS], string eventName[][DAYS],
+void loadUserData(bool eventPresent[][DAYS], string eventName[][DAYS],  // Reads all user data to several txt files
                   int eventHour[][DAYS], int eventMin[][DAYS])
 {
     int userChoice;
@@ -213,7 +217,7 @@ void loadUserData(bool eventPresent[][DAYS], string eventName[][DAYS],
     return;
 }
 
-void saveUserData(bool eventPresent[][DAYS], string eventName[][DAYS],
+void saveUserData(bool eventPresent[][DAYS], string eventName[][DAYS], // Writes all user data to several txt files
                   int eventHour[][DAYS], int eventMin[][DAYS])
 {
     int userChoice;
