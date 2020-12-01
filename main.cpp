@@ -12,27 +12,29 @@ using namespace std;
 
 const int MONTHS = 12;
 
+void addEvent(bool);
+void setLeapYear(int &, bool &);    //Checks for year, sets whether leap-year for February-related considerations
+
 int main()
 {
-    // Main Menu
-    // 1. Add an Event
-    // 2. Remove an Event
-    // 3. View Events
-    // 4. Quit
-    
-    //cout << "----------------------------------------|----------------------------------------";
-    int userChoice;
+    // establish arrays
 
-    
+    // read arrays in from previous save files (this should be a menu item and function)
+
+    int userChoice;
+    int year = 0;
+    bool leapYearSet = false;
+    bool leapYear;           
+    bool dummyStop;          
 
     do
     {
         cout << "\n\n----------------------------------Event Planner----------------------------------\n\n";
         cout << "Main Menu" << endl << endl;
         cout << "1. Add Event" << endl
-            << "2. Remove Event" << endl
-            << "3. View Events" << endl
-            << "4. Quit" << endl << endl;
+             << "2. Remove Event" << endl
+             << "3. View Events" << endl
+             << "4. Quit" << endl << endl;
 
         cout << "Please choose from the items above (1-4): ";
         while(!(cin >> userChoice) || userChoice < 1 || userChoice > 4)
@@ -44,15 +46,65 @@ int main()
 
         switch(userChoice)
         {
-            case 1: break;
-            case 2: break;
+            case 1: 
+            {
+                if(leapYearSet == false)
+                {
+                    setLeapYear(year, leapYear);
+                    leapYearSet = true;
+                }
+                addEvent();
+                break;
+            }
+            case 2: setLeapYear(year, leapYear); break;
             case 3: break;
-            default: break;
+            default: dummyStop = true; break;
         }
-    } while(userChoice != 4);
+    } while(dummyStop != true);
 }
 
-void functionAdd()
+void addEvent(bool leapYear)
+{
+    int monthChoice;
+    int daysCount;
+
+    cout << "\n\n------------------------------------Add Event------------------------------------\n\n";
+
+    cout << setw(20) << left << "1. January" << setw(20) << "2. February" << setw(20) << "3. March" << setw(20) << "4. April" << endl
+         << setw(20) << "5. May" << setw(20) << "6. June" << setw(20) << "7. July" << setw(20) << "8. August" << endl
+         << setw(20) << "9. September" << setw(20) << "10. October" << setw(20) << "11. November" << setw(20) << "12. December"
+         << endl << endl;
+
+    cout << "Please start by choosing a month for your event (1-12): ";
+    //Get, validate month
+    while(!(cin >> monthChoice) || monthChoice < 1 || monthChoice > 12)
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Please enter a valid option: ";
+        }
+    //Assign daysCount based on month choice; this will be used to keep from adding an event to Feb 30, Sep 31, etc.
+    if(monthChoice == 2)
+    {
+        if(leapYear)
+        {
+            daysCount = 29;
+        }
+        else
+        {
+            daysCount = 28;
+        }
+    }
+    else if(monthChoice == 4 || monthChoice == 6 || monthChoice = 9 || monthChoice == 11)
+    {
+        daysCount = 30;
+    }
+    else
+    {
+        monthChoice = 31;
+    }
+    //
+}
 
 /* void functionRemove()
     In which month?
@@ -64,3 +116,64 @@ void functionAdd()
     Display All
     Display by Month
     Display by day (still have to pick a month or maybe take two cins?)*/
+
+void setLeapYear(int &year, bool &leapYear)
+{
+    cout << "Please enter the year for this calendar: ";    // cout
+    while(!(cin >> year) || year < 2020 || year > 2099)     // while input bad, moar input
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+
+    if(year % 4 == 0)           // if year (cin above) has a remainder of 0
+    {
+        leapYear = true;        // then set leapYear (reference back to main) true
+        return;
+    }
+    else
+    {
+        leapYear = false;       // else set leapYear (reference back to main) false
+        return;
+    }
+}
+
+/*int timeConvert(int asd)
+{
+    This function will convert 24-hour ints to 12-hour AM/PM times
+}*/
+
+/*string meridianGen(int asd)
+{
+    This function will be called at roughly the same time as timeConvert(), and will
+    give a corresponding AM/PM to go along with the converted hour.
+}*/
+void loadUserData()
+{
+    // Use a for loop to populate various parallel arrays with data
+    // This will include a string array for event names
+    //                  an int array for hours of events
+    //                  an int array for minutes of events
+    // The value for each of these will be assigned to the same calendar-based row-column layout: [12][31]
+    // For example, my birthday would look like this:
+    //              boolArr[11][7] = true
+    //              nameArr[11][7] = "Brian's Birthday";
+    //              hourArr[11][7] = 14
+    //              minArr[11][7] = 30
+    // I could print it out by writing
+    // cout << nameArr[11][7] << " is occurring at" << timeConvert(hourArr[11][7]) << ":"
+    //      << minArr[11][7] << meridianGen(hourArr[11][7]) << "." << endl;
+    // The above instances of this specific array element will be filled using variables.
+    // Boy, I've gone way off-track, huh? This is healthy, though.
+    // So say I'm using a nested for loop to like, look up events in December and this is the only one.
+    // for(int e = 0; e < dayCount; e++)
+    // {
+    //      if(boolArr[monthChoice][e] == true)
+    //      {
+    //          cout << nameArr[monthChoice][e] << " at " << timeConvert(hourArr[monthChoice][e]) <<
+    //               << ":" << minArr[monthChoice][e] << meridianGen(hourArr[monthChoice][e]) << "." << endl;
+    //      }
+    // }
+    // ..........You know, that ain't half bad?
+}
