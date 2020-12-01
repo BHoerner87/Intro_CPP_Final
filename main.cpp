@@ -10,6 +10,8 @@
 
 using namespace std;
 
+const int MONTHS = 12;
+
 int main()
 {
     // Main Menu
@@ -20,6 +22,9 @@ int main()
     
     //cout << "----------------------------------------|----------------------------------------";
     int userChoice;
+
+    
+
     do
     {
         cout << "\n\n----------------------------------Event Planner----------------------------------\n\n";
@@ -36,11 +41,18 @@ int main()
             cin.ignore(1000, '\n');
             cout << "Please enter a valid option: ";
         }
+
+        switch(userChoice)
+        {
+            case 1: break;
+            case 2: break;
+            case 3: break;
+            default: break;
+        }
     } while(userChoice != 4);
 }
 
-/* void functionAdd()
-*/
+void functionAdd()
 
 /* void functionRemove()
     In which month?
