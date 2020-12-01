@@ -12,10 +12,11 @@
 using namespace std;
 
 const int MONTHS = 12;
+const int DAYS = 31;
 
 void addEvent(bool);
 void setLeapYear(int &, bool &);    //Checks for year, sets whether leap-year for February-related considerations
-void saveUserData();
+void saveUserData(bool [][DAYS], string [][31], int [][31], int [][31]);
 
 int main()
 {
@@ -64,7 +65,7 @@ int main()
             case 2: setLeapYear(year, leapYear); break;
             case 3: break;  // Sub-Menu: View all events? View by month?
             case 4: break;  // Use nested for loops to fill arrays from text files.
-            case 5: break;  // Use nested for loops to use current arrays to overwrite save txts.
+            case 5: saveUserData(eventPresent, eventName, eventHour, eventMin); break;  // Use nested for loops to use current arrays to overwrite save txts.
             case 0: dummyStop = true;
                     break;  // Can I set a flag for unsaved changes? And offer to save them before leaving?
                             // Either way, this is where files are closed, goodbye message, and program exit.
@@ -189,9 +190,48 @@ void loadUserData()
     // This is a change to try and get this shit talking to Github.
 }
 
-void saveUserData()
+void saveUserData(bool eventPresent[][DAYS], string eventName[][DAYS],
+                  int eventHour[][DAYS], int eventMin[][DAYS])
 {
-    ofstream eventStorage
-    eventStorage.open("eventPresent.txt");
+    int userChoice;
+
+    ofstream writeEventPresent;                     // Establish ifstream objects
+    ofstream writeEventName;
+    ofstream writeEventHour;
+    ofstream writeEventMin;
+    
+    writeEventPresent.open("eventPresent.txt");     // Open objects' .txt files
+    writeEventName.open("eventName.txt");
+    writeEventHour.open("eventHour.txt");
+    writeEventMin.open("eventMin.txt");
+
+    cout << "\n\n------------------------------------Save Data------------------------------------\n\n";
+    cout << "1. Save Data" << endl
+         << "2. Cancel" << endl << endl;
+    cout << "Would you like to save your calendar data? (1-2): " << endl;
+    while(!(cin >> userChoice) || userChoice < 0 || userChoice > 2)     //Get, validate userChoice
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    switch(userChoice)
+    {
+        case 1:
+        {
+            for(int m = 0; m < MONTHS; m++)
+            {
+                for(int d = 0; d < DAYS; d++)
+                {
+                    writeEventPresent << eventPresent[m][d] << endl;
+                    writeEventName << eventName[m][d] << endl;
+                    writeEventHour << eventHour[m][d] << endl;
+                    writeEventMin << eventMin[m][d] << endl;
+                }
+            }
+            break;
+        }
+        case 2: break;
+    }
     return;
 }
