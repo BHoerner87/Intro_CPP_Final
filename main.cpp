@@ -34,7 +34,9 @@ int main()
         cout << "1. Add Event" << endl
              << "2. Remove Event" << endl
              << "3. View Events" << endl
-             << "4. Quit" << endl << endl;
+             << "4. Load Events" << endl
+             << "5. Save Events" << endl << endl
+             << "0. Quit" << endl << endl;
 
         cout << "Please choose from the items above (1-4): ";
         while(!(cin >> userChoice) || userChoice < 1 || userChoice > 4)
@@ -57,7 +59,11 @@ int main()
                 break;
             }
             case 2: setLeapYear(year, leapYear); break;
-            case 3: break;
+            case 3: break;  // Sub-Menu: View all events? View by month?
+            case 4: break;  // Use nested for loops to fill arrays from text files.
+            case 5: break;  // Use nested for loops to use current arrays to overwrite save txts.
+            case 0: break;  // Can I set a flag for unsaved changes? And offer to save them before leaving?
+                            // Either way, this is where files are closed, goodbye message, and program exit.
             default: dummyStop = true; break;
         }
     } while(dummyStop != true);
