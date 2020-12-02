@@ -16,7 +16,12 @@ const int MONTHS = 12;
 const int DAYS = 31;
 
 // ********** Functions **********
-void addEvent(bool, bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], string [MONTHS]);    // Adds events
+void addEvent();                    // Display Add Menu Header
+void displayMonths();
+int monthChoice();
+int monthDaysCheck(int, bool);
+int dayChoice(int);
+//void addEvent(bool, bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], string [MONTHS]);    // Adds events
 void setLeapYear(int &, bool &);    // Checks for year, sets whether leap-year for February-related considerations
 void saveUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  // Saves data
 void loadUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  // Loads data
@@ -78,7 +83,7 @@ int main()
                     setLeapYear(year, leapYear);
                     leapYearSet = true;
                 }
-                addEvent(leapYear, eventPresent, eventName, eventHour, eventMin, monthNames);
+                //addEvent(leapYear, eventPresent, eventName, eventHour, eventMin, monthNames);
                 break;
             }
             case 2: break;
@@ -94,7 +99,71 @@ int main()
     } while(dummyStop != true);
 }
 
-void addEvent(bool leapYear, bool eventPresent[MONTHS][DAYS], string eventName[MONTHS][DAYS],
+void addEventDisplay()
+{
+    cout << "\n\n------------------------------------Add Event------------------------------------\n\n";
+    return;
+}
+
+void displayMonths()
+{
+    cout << setw(20) << left << "1. January" << setw(20) << "2. February" << setw(20) << "3. March" << setw(20) << "4. April" << endl
+         << setw(20) << "5. May" << setw(20) << "6. June" << setw(20) << "7. July" << setw(20) << "8. August" << endl
+         << setw(20) << "9. September" << setw(20) << "10. October" << setw(20) << "11. November" << setw(20) << "12. December"
+         << endl << endl;
+    cout << "Please start by choosing a month for your event (1-12): ";
+    return;
+}
+
+int monthChoice()
+{
+    int userChoice;
+    while(!(cin >> userChoice || userChoice < 1 || userChoice > 12))
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    return userChoice;
+}
+
+int monthDaysCheck(int month, bool leapYear)
+{
+    int daysCount;
+    if(month == 2)
+    {
+        if(leapYear)
+        {
+            daysCount = 29;
+        }
+        else
+        {
+            daysCount = 28;
+        }
+    }
+    else if(month == 4 || month == 6 || month == 9 || month == 11)
+    {
+        daysCount = 30;
+    }
+    else
+    {
+        daysCount = 31;
+    }
+}
+
+int dayChoice(int dayCount)
+{
+    int userChoice;
+    while(!(cin >> userChoice) || userChoice < 1 || userChoice > dayCount)
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    return userChoice;
+}
+
+/*void addEvent(bool leapYear, bool eventPresent[MONTHS][DAYS], string eventName[MONTHS][DAYS],
               int eventHour[MONTHS][DAYS], int eventMin[MONTHS][DAYS], string monthNames[MONTHS])
 {
     int monthChoice;    // User's chosen month
@@ -187,7 +256,10 @@ void addEvent(bool leapYear, bool eventPresent[MONTHS][DAYS], string eventName[M
          getMeridian(hourChoice);
          cout << " is set.";
     return;
-}
+}*/
+
+
+
 /* void functionRemove()
     In which month?
         List events for month
