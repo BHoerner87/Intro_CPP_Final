@@ -172,7 +172,8 @@ void addEvent(bool leapYear, bool eventPresent[][DAYS], string eventName[][DAYS]
     cout << "What is the name of your event on " << monthNames[monthChoice - 1] << " "
          << dayChoice << " at " << hourConvert(hourChoice) << "? ";
 
-    getline(cin, eventNameChoice);
+    //getline(cin, eventNameChoice);
+    cin >> eventNameChoice;
 
     // Assignment to arrays
     eventPresent[monthChoice][dayChoice] = true;
