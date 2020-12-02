@@ -50,7 +50,7 @@ int main()
         cout << "Main Menu" << endl << endl;
         cout << "1. Add Event" << endl
              << "2. Remove Event" << endl
-             << "3. View Events" << endl
+             << "3. Display Events" << endl
              << "4. Load Events" << endl
              << "5. Save Events" << endl << endl
              << "0. Quit" << endl << endl;
@@ -75,8 +75,8 @@ int main()
                 addEvent(leapYear);
                 break;
             }
-            case 2: setLeapYear(year, leapYear); break;
-            case 3: break;  // Sub-Menu: View all events? View by month?
+            case 2: break;
+            case 3: displayMenu(eventPresent, eventName, eventHour, eventMin, monthNames); break;
             case 4: loadUserData(eventPresent, eventName, eventHour, eventMin); break;  // Use nested for loops to fill arrays from text files.
             case 5: saveUserData(eventPresent, eventName, eventHour, eventMin); break;  // Use nested for loops to use current arrays to overwrite save txts.
             case 6: cout << "Sneaky test: the value of eventPresent[0][0] is: " << eventPresent[0][0] << endl; break;
@@ -202,9 +202,6 @@ void displayMenu(bool eventPresent[][DAYS], string eventName[][DAYS],  // Reads 
         case 0: break;
     }
 }
-    /*Display All
-    Display by Month
-    Display by day (still have to pick a month or maybe take two cins?)*/
 
 void setLeapYear(int &year, bool &leapYear)
 {
