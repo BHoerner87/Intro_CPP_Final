@@ -11,9 +11,11 @@
 
 using namespace std;
 
+// ********** Global Constants **********
 const int MONTHS = 12;
 const int DAYS = 31;
 
+// ********** Functions **********
 void addEvent(bool);            // Adds events
 void setLeapYear(int &, bool &);// Checks for year, sets whether leap-year for February-related considerations
 void saveUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  // Saves data
@@ -21,14 +23,17 @@ void loadUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  
 void displayMenu(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], string[MONTHS]);             // Shows a menu for display options
 int hourConvert(int);           // Converts 24-format hours to 12-hour for display purposes
 
+// ********** Main **********
 int main()
 {
+    // ********** Arrays **********
     bool eventPresent[12][31];  // Store whether an event exists on a calendar date
     string eventName[12][31];   // Store name of an event on a calendar date
     int eventHour[12][31];      // Store 24-hour format value for hour of event
     int eventMin[12][31];       // Store minute-specific time for event (00, 15, 30, 45)
     string monthNames[12];      // Store month names for output
 
+    // ********** Variables **********
     int userChoice;
     int year = 0;
     bool leapYearSet = false;
@@ -88,10 +93,15 @@ int main()
     } while(dummyStop != true);
 }
 
-void addEvent(bool leapYear)
+void addEvent(bool leapYear, bool eventPresent[][DAYS], string eventName[][DAYS],
+              int eventHour[][DAYS], int eventMin[][DAYS], string monthNames[MONTHS])
 {
-    int monthChoice;
-    int daysCount;
+    int monthChoice;    // User's chosen month
+    int dayChoice;      // User's choice of day
+    int daysCount;      // Count of days for a given month (prevents Feb 30th, etc.)
+    int hourChoice;     // Hour of the day for user's event
+    int minChoice;      // Minutes of the hour for user's event
+    string eventNameChoice; //Chosen name of user's event
 
     cout << "\n\n------------------------------------Add Event------------------------------------\n\n";
 
@@ -126,10 +136,45 @@ void addEvent(bool leapYear)
     }
     else
     {
-        monthChoice = 31;
+        daysCount = 31;
     }
-}
+    cout << "Planning for " << monthNames[monthChoice - 1] << "..." << endl << endl;
+    cout << "What day does your event take place on? (1 - " << daysCount << "): ";
+    while(!(cin >> dayChoice) || dayChoice < 1 || dayChoice > daysCount)
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Please enter a valid option: ";
+        }
 
+    cout << "Planning for " << monthNames[monthChoice - 1] << " " << dayChoice << "..." << endl;
+    cout << "At what hour does your event take place? (We'll get the minutes momentarily)" << endl;
+    cout << "Input your hour in 24-hour format; we'll handle the conversion (13 = 1PM): ";
+    while(!(cin >> hourChoice) || hourChoice < 0 || hourChoice > 23)
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Please enter a valid option: ";
+        }
+
+    cout << "Planning for " << monthNames[monthChoice - 1] << " "
+         << dayChoice << " at " << hourConvert(hourChoice) << "..." << endl;
+    cout << "What minutes go with your hour? (00, 15, 30, 45...): ";
+    while(!(cin >> minChoice) || minChoice < 0 || minChoice > 59)
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Please enter a valid option: ";
+        }
+    
+    cout << "What is the name of your event on " << monthNames[monthChoice - 1] << " "
+         << dayChoice << " at " << hourConvert(hourChoice) << "? ";
+
+    getline(cin, eventNameChoice);
+
+    cout << "Your event, " << eventNameChoice << ", on " << monthNames[monthChoice - 1] << " "
+         << dayChoice << " at " << hourConvert(hourChoice) << " is set.";
+}
 /* void functionRemove()
     In which month?
         List events for month
