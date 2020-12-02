@@ -139,7 +139,7 @@ void addEvent(bool leapYear, bool eventPresent[][DAYS], string eventName[][DAYS]
     {
         daysCount = 31;
     }
-    cout << "Planning for " << monthNames[monthChoice - 1] << "..." << endl << endl;
+    cout << "\nPlanning for " << monthNames[monthChoice - 1] << "..." << endl << endl;
     cout << "What day does your event take place on? (1 - " << daysCount << "): ";
     while(!(cin >> dayChoice) || dayChoice < 1 || dayChoice > daysCount)
         {
@@ -148,8 +148,8 @@ void addEvent(bool leapYear, bool eventPresent[][DAYS], string eventName[][DAYS]
             cout << "Please enter a valid option: ";
         }
 
-    cout << "Planning for " << monthNames[monthChoice - 1] << " " << dayChoice << "..." << endl;
-    cout << "At what hour does your event take place? (We'll get the minutes momentarily)" << endl;
+    cout << "\nPlanning for " << monthNames[monthChoice - 1] << " " << dayChoice << "..." << endl;
+    cout << "\nAt what hour does your event take place? (We'll get the minutes momentarily)" << endl;
     cout << "Input your hour in 24-hour format; we'll handle the conversion (13 = 1PM): ";
     while(!(cin >> hourChoice) || hourChoice < 0 || hourChoice > 23)
         {
@@ -158,9 +158,10 @@ void addEvent(bool leapYear, bool eventPresent[][DAYS], string eventName[][DAYS]
             cout << "Please enter a valid option: ";
         }
 
-    cout << "Planning for " << monthNames[monthChoice - 1] << " "
+    cout << "\nPlanning for " << monthNames[monthChoice - 1] << " "
          << dayChoice << " at " << hourConvert(hourChoice) << "..." << endl;
-    cout << "What minutes go with your hour? (00, 15, 30, 45...): ";
+    cout << "\nWhat minutes go with your hour? (00, 15, 30, 45...): ";
+    cin.clear();
     while(!(cin >> minChoice) || minChoice < 0 || minChoice > 59)
         {
             cin.clear();
