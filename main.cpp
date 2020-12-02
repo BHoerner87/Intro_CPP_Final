@@ -94,8 +94,8 @@ int main()
     } while(dummyStop != true);
 }
 
-void addEvent(bool leapYear, bool eventPresent[][DAYS], string eventName[][DAYS],
-              int eventHour[][DAYS], int eventMin[][DAYS], string monthNames[MONTHS])
+void addEvent(bool leapYear, bool eventPresent[MONTHS][DAYS], string eventName[MONTHS][DAYS],
+              int eventHour[MONTHS][DAYS], int eventMin[MONTHS][DAYS], string monthNames[MONTHS])
 {
     int monthChoice;    // User's chosen month
     int dayChoice;      // User's choice of day
@@ -157,6 +157,7 @@ void addEvent(bool leapYear, bool eventPresent[][DAYS], string eventName[][DAYS]
             cin.ignore(1000, '\n');
             cout << "Please enter a valid option: ";
         }
+    //eventHour[monthChoice][dayChoice] = hourChoice;
 
     cout << "\nPlanning for " << monthNames[monthChoice - 1] << " "
          << dayChoice << " at " << hourConvert(hourChoice) << "..." << endl;
@@ -172,16 +173,16 @@ void addEvent(bool leapYear, bool eventPresent[][DAYS], string eventName[][DAYS]
     cout << "What is the name of your event on " << monthNames[monthChoice - 1] << " "
          << dayChoice << " at " << hourConvert(hourChoice) << "? ";
 
-    //getline(cin, eventNameChoice);
-    cin >> eventNameChoice;
+    getline(cin, eventNameChoice);
+    //cin >> eventNameChoice;
 
-    // Assignment to arrays
+    //Assignment to arrays
     eventPresent[monthChoice][dayChoice] = true;
     eventName[monthChoice][dayChoice] = eventNameChoice;
     eventHour[monthChoice][dayChoice] = hourChoice;
     eventMin[monthChoice][dayChoice] = minChoice;
 
-    cout << "Your event, " << eventNameChoice << ", on " << monthNames[monthChoice - 1] << " "
+    cout << "Your event, " << eventName[monthChoice-1][dayChoice-1] << ", on " << monthNames[monthChoice - 1] << " "
          << dayChoice << " at " << hourConvert(hourChoice) << " ";
          getMeridian(hourChoice);
          cout << " is set.";
