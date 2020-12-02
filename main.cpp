@@ -16,12 +16,13 @@ const int MONTHS = 12;
 const int DAYS = 31;
 
 // ********** Functions **********
-void addEvent(bool);            // Adds events
-void setLeapYear(int &, bool &);// Checks for year, sets whether leap-year for February-related considerations
+void addEvent(bool, bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], string [MONTHS]);    // Adds events
+void setLeapYear(int &, bool &);    // Checks for year, sets whether leap-year for February-related considerations
 void saveUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  // Saves data
 void loadUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  // Loads data
 void displayMenu(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], string[MONTHS]);             // Shows a menu for display options
-int hourConvert(int);           // Converts 24-format hours to 12-hour for display purposes
+int hourConvert(int);               // Converts 24-format hours to 12-hour for display purposes
+void getMeridian(int);              // Gets appropriate AM or PM label for converted hour display
 
 // ********** Main **********
 int main()
@@ -77,7 +78,7 @@ int main()
                     setLeapYear(year, leapYear);
                     leapYearSet = true;
                 }
-                addEvent(leapYear);
+                addEvent(leapYear, eventPresent, eventName, eventHour, eventMin, monthNames);
                 break;
             }
             case 2: break;
@@ -179,7 +180,10 @@ void addEvent(bool leapYear, bool eventPresent[][DAYS], string eventName[][DAYS]
     eventMin[monthChoice][dayChoice] = minChoice;
 
     cout << "Your event, " << eventNameChoice << ", on " << monthNames[monthChoice - 1] << " "
-         << dayChoice << " at " << hourConvert(hourChoice) << " " << getMeridian(hourChoice) << " is set.";
+         << dayChoice << " at " << hourConvert(hourChoice) << " ";
+         getMeridian(hourChoice);
+         cout << " is set.";
+    return;
 }
 /* void functionRemove()
     In which month?
@@ -285,7 +289,7 @@ int hourConvert(int hour)
     return hour;
 }
 
-string getMeridian(int hour)
+void getMeridian(int hour)
 {
     if(hour < 12)
     {
