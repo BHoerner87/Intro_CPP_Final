@@ -172,8 +172,14 @@ void addEvent(bool leapYear, bool eventPresent[][DAYS], string eventName[][DAYS]
 
     getline(cin, eventNameChoice);
 
+    // Assignment to arrays
+    eventPresent[monthChoice][dayChoice] = true;
+    eventName[monthChoice][dayChoice] = eventNameChoice;
+    eventHour[monthChoice][dayChoice] = hourChoice;
+    eventMin[monthChoice][dayChoice] = minChoice;
+
     cout << "Your event, " << eventNameChoice << ", on " << monthNames[monthChoice - 1] << " "
-         << dayChoice << " at " << hourConvert(hourChoice) << " is set.";
+         << dayChoice << " at " << hourConvert(hourChoice) << " " << getMeridian(hourChoice) << " is set.";
 }
 /* void functionRemove()
     In which month?
@@ -279,11 +285,17 @@ int hourConvert(int hour)
     return hour;
 }
 
-/*string meridianGen(int asd)**********************
+string getMeridian(int hour)
 {
-    This function will be called at roughly the same time as timeConvert(), and will
-    give a corresponding AM/PM to go along with the converted hour.
-}*/
+    if(hour < 12)
+    {
+        cout << "AM";
+    }
+    else
+    {
+        cout << "PM";
+    }
+}
 
 void loadUserData(bool eventPresent[][DAYS], string eventName[][DAYS],  // Reads all user data to several txt files
                   int eventHour[][DAYS], int eventMin[][DAYS])
