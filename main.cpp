@@ -140,6 +140,8 @@ void displayMenu(bool eventPresent[][DAYS], string eventName[][DAYS],  // Reads 
                   int eventHour[][DAYS], int eventMin[][DAYS], string monthNames[MONTHS])
 {
     int userChoice;
+    int monthChoice;
+    int eventCounter;
 
     cout << "\n\n----------------------------------Display Menu-----------------------------------\n\n";
     cout << "1. Display All Events" << endl
@@ -157,7 +159,6 @@ void displayMenu(bool eventPresent[][DAYS], string eventName[][DAYS],  // Reads 
         case 1:
         {
             cout << "\n\n-------------------------------Display All Events--------------------------------\n\n";
-            int eventCounter;
             for(int m = 0; m < MONTHS; m++)
             {
                 for(int d = 0; d < DAYS; d++)
@@ -169,9 +170,35 @@ void displayMenu(bool eventPresent[][DAYS], string eventName[][DAYS],  // Reads 
                     }
                 }
             }
+            eventCounter = 0;
+        break;
         }
+        case 2: 
+        {
+            cout << "\n\n----------------------------Display Events by Month------------------------------\n\n";
+            cout << setw(20) << left << "1. January" << setw(20) << "2. February" << setw(20) << "3. March" << setw(20) << "4. April" << endl
+                 << setw(20) << "5. May" << setw(20) << "6. June" << setw(20) << "7. July" << setw(20) << "8. August" << endl
+                 << setw(20) << "9. September" << setw(20) << "10. October" << setw(20) << "11. November" << setw(20) << "12. December"
+                 << endl << endl;
+
+            cout << "Which month would you like to display? (1-12 or 0 to Cancel): ";
+            while(!(cin >> monthChoice) || monthChoice < 0 || monthChoice > 13)     // while input bad, moar input
+            {
+                cin.clear();
+                cin.ignore(1000, '\n');
+                cout << "Please enter a valid option: ";
+            }
+            for(int d = 0; d < DAYS; d++)
+            {
+                if(eventPresent[monthChoice - 1][d])
+                {
+                    cout << ++eventCounter << ". " << eventName[monthChoice - 1][d] << " on " << monthNames[monthChoice - 1] << " " << (d + 1)
+                         << " at " << hourConvert(eventHour[monthChoice - 1][d]) << ":" << eventMin[monthChoice - 1][d] << endl;
+                }
+            }
+            eventCounter = 0;
             break;
-        case 2: break;
+        }
         case 0: break;
     }
 }
