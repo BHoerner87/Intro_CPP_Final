@@ -22,7 +22,10 @@ int monthChoice();
 int monthDaysCheck(int, bool);
 int dayChoice(int);
 int hourChoice();
-int minuteChoice();
+int minuteChoice(int);
+string getName();
+string monthReturn(int, string[MONTHS]);
+void eventMake(bool [][DAYS], int [][DAYS], int [][DAYS], string [MONTHS], string [][DAYS], int, int, int, int, string);
 //void addEvent(bool, bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], string [MONTHS]);    // Adds events
 void setLeapYear(int &, bool &);    // Checks for year, sets whether leap-year for February-related considerations
 void saveUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  // Saves data
@@ -36,10 +39,10 @@ int main()
 {
     // ********** Arrays **********
     bool eventPresent[12][31];  // Store whether an event exists on a calendar date
-    string eventName[12][31];   // Store name of an event on a calendar date
     int eventHour[12][31];      // Store 24-hour format value for hour of event
     int eventMin[12][31];       // Store minute-specific time for event (00, 15, 30, 45)
     string monthNames[12];      // Store month names for output
+    string eventName[12][31];   // Store name of an event on a calendar date
 
     // ********** Variables **********
     int userChoice;
@@ -53,6 +56,7 @@ int main()
     bool leapYear;           
     bool dummyStop;
     bool unsavedChanges = false;
+    string eventNameVar;
 
     ifstream monthData;             // Load month names into array from txt
     monthData.open("months.txt");
@@ -97,6 +101,9 @@ int main()
                 day = dayChoice(monthDayCount);
                 hour = hourChoice();
                 minutes = minuteChoice(hour);
+                eventNameVar = getName();
+                eventMake(eventPresent, eventHour, eventMin, monthNames, eventName,
+                          month, day, hour, minutes, eventNameVar);
                 //addEvent(leapYear, eventPresent, eventName, eventHour, eventMin, monthNames);
                 break;
             }
@@ -183,7 +190,7 @@ int hourChoice()
 {
     int userChoice;
     cout << "\nAt what hour does your event occur?" << endl
-         << "Please enter the hour in 24-hour format (military time) and" << endl
+         << "\nPlease enter the hour in 24-hour format (military time) and" << endl
          << "the software will convert it to AM/PM for you: ";
     while(!(cin >> userChoice) || userChoice < 0 || userChoice > 23)
     {
@@ -197,7 +204,7 @@ int hourChoice()
 int minuteChoice(int hour)
 {
     int userChoice;
-    cout << "\nIs there a more specific time?" << hour << ":15? " << hour << ":30? etc.: " << endl
+    cout << "\nIs there a more specific time? " << hourConvert(hour) << ":15? " << hourConvert(hour) << ":30? etc.: " << endl
          << "Please add minutes: ";
     
     while(!(cin >> userChoice) || userChoice < 0 || userChoice > 59)
@@ -209,6 +216,52 @@ int minuteChoice(int hour)
     return userChoice;
 }
 
+string getName()
+{
+    string eventName;
+    cout << "\nPlease enter the name of your event: ";
+    cin.ignore();
+    getline(cin, eventName);
+    return eventName;
+}
+
+void eventMake(// Arrays
+               bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[][DAYS],
+               string monthNames[MONTHS], string eventName[][DAYS],
+               // Variables
+                int month, int day, int hour, int minutes, string eventNameVar)
+{
+    cout << "\nGreat. Your event, " << eventNameVar << ", is scheduled for ";
+    monthReturn(month, monthNames);
+    cout << " " << day << ", at ";
+    hourConvert(hour);
+    cout << ":" << minutes << " ";
+    getMeridian(hour);
+    cout << ". Returning to Main Menu...Don't forget to save!";
+
+    //Filing everything away in arrays
+    eventPresent[month - 1][day - 1] = true;
+    eventName[month - 1][day -1] = eventNameVar;
+    eventHour[month - 1][day - 1] = hour;
+    eventMin[month - 1][day - 1] = minutes;
+
+    //Clear variables out
+    eventNameVar = " ";
+    hour = 0;
+    minutes = 0;    
+
+    return;//**************************************Not done
+}
+
+string monthReturn(int month, string monthNames[MONTHS])
+{
+    string dummyVar;
+    for(int i = 1; i == month; i++)
+    {
+        dummyVar = monthNames[i];
+    }
+    return dummyVar;
+}
 /*void addEvent(bool leapYear, bool eventPresent[MONTHS][DAYS], string eventName[MONTHS][DAYS],
               int eventHour[MONTHS][DAYS], int eventMin[MONTHS][DAYS], string monthNames[MONTHS])
 {
@@ -381,7 +434,7 @@ void displayMenu(bool eventPresent[][DAYS], string eventName[][DAYS],  // Reads 
 
 void setLeapYear(int &year, bool &leapYear)
 {
-    cout << "Please enter the year for this calendar: ";    // cout
+    cout << "\nPlease enter the year for this calendar: ";    // cout
     while(!(cin >> year) || year < 2020 || year > 2099)     // while input bad, moar input
     {
         cin.clear();
