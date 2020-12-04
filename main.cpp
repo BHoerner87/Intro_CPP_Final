@@ -16,11 +16,13 @@ const int MONTHS = 12;
 const int DAYS = 31;
 
 // ********** Functions **********
-void addEvent();                    // Display Add Menu Header
+void addEventDisplay();                    // Display Add Menu Header
 void displayMonths();
 int monthChoice();
 int monthDaysCheck(int, bool);
 int dayChoice(int);
+int hourChoice();
+int minuteChoice();
 //void addEvent(bool, bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], string [MONTHS]);    // Adds events
 void setLeapYear(int &, bool &);    // Checks for year, sets whether leap-year for February-related considerations
 void saveUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  // Saves data
@@ -41,6 +43,11 @@ int main()
 
     // ********** Variables **********
     int userChoice;
+    int minutes;
+    int hour;
+    int day = 0;
+    int month = 0;
+    int monthDayCount;
     int year = 0;
     bool leapYearSet = false;
     bool leapYear;           
@@ -83,6 +90,13 @@ int main()
                     setLeapYear(year, leapYear);
                     leapYearSet = true;
                 }
+                addEventDisplay();
+                displayMonths();
+                month = monthChoice();
+                monthDayCount = monthDaysCheck(month, leapYear);
+                day = dayChoice(monthDayCount);
+                hour = hourChoice();
+                minutes = minuteChoice(hour);
                 //addEvent(leapYear, eventPresent, eventName, eventHour, eventMin, monthNames);
                 break;
             }
@@ -149,12 +163,44 @@ int monthDaysCheck(int month, bool leapYear)
     {
         daysCount = 31;
     }
+    return daysCount;
 }
 
 int dayChoice(int dayCount)
 {
+    cout << "\nOn what day does your event occur? ";
     int userChoice;
     while(!(cin >> userChoice) || userChoice < 1 || userChoice > dayCount)
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    return userChoice;
+}
+
+int hourChoice()
+{
+    int userChoice;
+    cout << "\nAt what hour does your event occur?" << endl
+         << "Please enter the hour in 24-hour format (military time) and" << endl
+         << "the software will convert it to AM/PM for you: ";
+    while(!(cin >> userChoice) || userChoice < 0 || userChoice > 23)
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    return userChoice;
+}
+
+int minuteChoice(int hour)
+{
+    int userChoice;
+    cout << "\nIs there a more specific time?" << hour << ":15? " << hour << ":30? etc.: " << endl
+         << "Please add minutes: ";
+    
+    while(!(cin >> userChoice) || userChoice < 0 || userChoice > 59)
     {
         cin.clear();
         cin.ignore(1000, '\n');
