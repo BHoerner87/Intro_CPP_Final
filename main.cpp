@@ -24,9 +24,9 @@ int dayChoice(int);
 int hourChoice();
 int minuteChoice(int);
 string getName();
-string monthReturn(int, string[MONTHS]);
+// void monthReturn(int, string[MONTHS]);
 void eventMake(bool [][DAYS], int [][DAYS], int [][DAYS], string [MONTHS], string [][DAYS], int, int, int, int, string);
-//void addEvent(bool, bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], string [MONTHS]);    // Adds events
+// void addEvent(bool, bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], string [MONTHS]);    // Adds events
 void setLeapYear(int &, bool &);    // Checks for year, sets whether leap-year for February-related considerations
 void saveUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  // Saves data
 void loadUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS]);  // Loads data
@@ -111,7 +111,7 @@ int main()
             case 3: displayMenu(eventPresent, eventName, eventHour, eventMin, monthNames); break;
             case 4: loadUserData(eventPresent, eventName, eventHour, eventMin); break;  // Use nested for loops to fill arrays from text files.
             case 5: saveUserData(eventPresent, eventName, eventHour, eventMin); break;  // Use nested for loops to use current arrays to overwrite save txts.
-            case 6: cout << "Sneaky test: the value of eventPresent[0][0] is: " << eventPresent[0][0] << endl; break;
+            case 6: cout << "Sneaky test: "; monthNames[5]; cout << endl; break;
             case 0: dummyStop = true;
                     break;  // Can I set a flag for unsaved changes? And offer to save them before leaving?
                             // Either way, this is where files are closed, goodbye message, and program exit.
@@ -231,13 +231,13 @@ void eventMake(// Arrays
                // Variables
                 int month, int day, int hour, int minutes, string eventNameVar)
 {
-    cout << "\nGreat. Your event, " << eventNameVar << ", is scheduled for ";
-    monthReturn(month, monthNames);
-    cout << " " << day << ", at ";
-    hourConvert(hour);
-    cout << ":" << minutes << " ";
+    cout << "\nGreat. Your event, " << eventNameVar << ", \nis scheduled for ";
+    cout << monthNames[month - 1] << " " << day << ", at ";
+    cout << hourConvert(hour);
+    cout << ":" << setw(2) << setfill('0') << minutes << setfill(' ') << " ";
     getMeridian(hour);
-    cout << ". Returning to Main Menu...Don't forget to save!";
+    cout << ". \n\nPress 'Enter' to return to the Main Menu...Don't forget to save!";
+    cin.get();
 
     //Filing everything away in arrays
     eventPresent[month - 1][day - 1] = true;
@@ -252,112 +252,6 @@ void eventMake(// Arrays
 
     return;//**************************************Not done
 }
-
-string monthReturn(int month, string monthNames[MONTHS])
-{
-    string dummyVar;
-    for(int i = 1; i == month; i++)
-    {
-        dummyVar = monthNames[i];
-    }
-    return dummyVar;
-}
-/*void addEvent(bool leapYear, bool eventPresent[MONTHS][DAYS], string eventName[MONTHS][DAYS],
-              int eventHour[MONTHS][DAYS], int eventMin[MONTHS][DAYS], string monthNames[MONTHS])
-{
-    int monthChoice;    // User's chosen month
-    int dayChoice;      // User's choice of day
-    int daysCount;      // Count of days for a given month (prevents Feb 30th, etc.)
-    int hourChoice;     // Hour of the day for user's event
-    int minChoice;      // Minutes of the hour for user's event
-    string eventNameChoice; //Chosen name of user's event
-
-    cout << "\n\n------------------------------------Add Event------------------------------------\n\n";
-
-    cout << setw(20) << left << "1. January" << setw(20) << "2. February" << setw(20) << "3. March" << setw(20) << "4. April" << endl
-         << setw(20) << "5. May" << setw(20) << "6. June" << setw(20) << "7. July" << setw(20) << "8. August" << endl
-         << setw(20) << "9. September" << setw(20) << "10. October" << setw(20) << "11. November" << setw(20) << "12. December"
-         << endl << endl;
-
-    cout << "Please start by choosing a month for your event (1-12): ";
-    //Get, validate month
-    while(!(cin >> monthChoice) || monthChoice < 1 || monthChoice > 12)
-        {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Please enter a valid option: ";
-        }
-    //Assign daysCount based on month choice; this will be used to keep from adding an event to Feb 30, Sep 31, etc.
-    if(monthChoice == 2)
-    {
-        if(leapYear)
-        {
-            daysCount = 29;
-        }
-        else
-        {
-            daysCount = 28;
-        }
-    }
-    else if(monthChoice == 4 || monthChoice == 6 || monthChoice == 9 || monthChoice == 11)
-    {
-        daysCount = 30;
-    }
-    else
-    {
-        daysCount = 31;
-    }
-    cout << "\nPlanning for " << monthNames[monthChoice - 1] << "..." << endl << endl;
-    cout << "What day does your event take place on? (1 - " << daysCount << "): ";
-    while(!(cin >> dayChoice) || dayChoice < 1 || dayChoice > daysCount)
-        {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Please enter a valid option: ";
-        }
-
-    cout << "\nPlanning for " << monthNames[monthChoice - 1] << " " << dayChoice << "..." << endl;
-    cout << "\nAt what hour does your event take place? (We'll get the minutes momentarily)" << endl;
-    cout << "Input your hour in 24-hour format; we'll handle the conversion (13 = 1PM): ";
-    while(!(cin >> hourChoice) || hourChoice < 0 || hourChoice > 23)
-        {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Please enter a valid option: ";
-        }
-    //eventHour[monthChoice][dayChoice] = hourChoice;
-
-    cout << "\nPlanning for " << monthNames[monthChoice - 1] << " "
-         << dayChoice << " at " << hourConvert(hourChoice) << "..." << endl;
-    cout << "\nWhat minutes go with your hour? (00, 15, 30, 45...): ";
-    cin.clear();
-    while(!(cin >> minChoice) || minChoice < 0 || minChoice > 59)
-        {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Please enter a valid option: ";
-        }
-    
-    cout << "What is the name of your event on " << monthNames[monthChoice - 1] << " "
-         << dayChoice << " at " << hourConvert(hourChoice) << "? ";
-
-    getline(cin, eventNameChoice);
-    //cin >> eventNameChoice;
-
-    //Assignment to arrays
-    eventPresent[monthChoice][dayChoice] = true;
-    eventName[monthChoice][dayChoice] = eventNameChoice;
-    eventHour[monthChoice][dayChoice] = hourChoice;
-    eventMin[monthChoice][dayChoice] = minChoice;
-
-    cout << "Your event, " << eventName[monthChoice-1][dayChoice-1] << ", on " << monthNames[monthChoice - 1] << " "
-         << dayChoice << " at " << hourConvert(hourChoice) << " ";
-         getMeridian(hourChoice);
-         cout << " is set.";
-    return;
-}*/
-
-
 
 /* void functionRemove()
     In which month?
@@ -395,7 +289,8 @@ void displayMenu(bool eventPresent[][DAYS], string eventName[][DAYS],  // Reads 
                     if(eventPresent[m][d] == true)
                     {
                         cout << ++eventCounter << ". " << eventName[m][d] << " on " << monthNames[m] << " " << (d + 1)
-                             << " at " << hourConvert(eventHour[m][d]) << ":" << eventMin[m][d] << endl;
+                             << " at " << hourConvert(eventHour[m][d]) << ":" << setw(2) << setfill('0') << eventMin[m][d] << endl;
+                        cout << setfill(' ');
                     }
                 }
             }
@@ -574,3 +469,110 @@ void saveUserData(bool eventPresent[][DAYS], string eventName[][DAYS], // Writes
     }
     return;
 }
+
+/******************************FUNCTION GRAVEYARD*********************************
+ * 
+/*void monthReturn(int month, string monthNames[MONTHS])
+{
+    for(int i = 0; i == (month - 1); i++)
+    {
+        cout << monthNames[i];
+    }
+    return;
+}   This function didn't work out the way I hoped it would. Its purpose was better
+    served by just doing some basic stuff in the spot where I was calling it. */
+/*void addEvent(bool leapYear, bool eventPresent[MONTHS][DAYS], string eventName[MONTHS][DAYS],
+              int eventHour[MONTHS][DAYS], int eventMin[MONTHS][DAYS], string monthNames[MONTHS])
+{
+    int monthChoice;    // User's chosen month
+    int dayChoice;      // User's choice of day
+    int daysCount;      // Count of days for a given month (prevents Feb 30th, etc.)
+    int hourChoice;     // Hour of the day for user's event
+    int minChoice;      // Minutes of the hour for user's event
+    string eventNameChoice; //Chosen name of user's event
+
+    cout << "\n\n------------------------------------Add Event------------------------------------\n\n";
+
+    cout << setw(20) << left << "1. January" << setw(20) << "2. February" << setw(20) << "3. March" << setw(20) << "4. April" << endl
+         << setw(20) << "5. May" << setw(20) << "6. June" << setw(20) << "7. July" << setw(20) << "8. August" << endl
+         << setw(20) << "9. September" << setw(20) << "10. October" << setw(20) << "11. November" << setw(20) << "12. December"
+         << endl << endl;
+
+    cout << "Please start by choosing a month for your event (1-12): ";
+    //Get, validate month
+    while(!(cin >> monthChoice) || monthChoice < 1 || monthChoice > 12)
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Please enter a valid option: ";
+        }
+    //Assign daysCount based on month choice; this will be used to keep from adding an event to Feb 30, Sep 31, etc.
+    if(monthChoice == 2)
+    {
+        if(leapYear)
+        {
+            daysCount = 29;
+        }
+        else
+        {
+            daysCount = 28;
+        }
+    }
+    else if(monthChoice == 4 || monthChoice == 6 || monthChoice == 9 || monthChoice == 11)
+    {
+        daysCount = 30;
+    }
+    else
+    {
+        daysCount = 31;
+    }
+    cout << "\nPlanning for " << monthNames[monthChoice - 1] << "..." << endl << endl;
+    cout << "What day does your event take place on? (1 - " << daysCount << "): ";
+    while(!(cin >> dayChoice) || dayChoice < 1 || dayChoice > daysCount)
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Please enter a valid option: ";
+        }
+
+    cout << "\nPlanning for " << monthNames[monthChoice - 1] << " " << dayChoice << "..." << endl;
+    cout << "\nAt what hour does your event take place? (We'll get the minutes momentarily)" << endl;
+    cout << "Input your hour in 24-hour format; we'll handle the conversion (13 = 1PM): ";
+    while(!(cin >> hourChoice) || hourChoice < 0 || hourChoice > 23)
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Please enter a valid option: ";
+        }
+    //eventHour[monthChoice][dayChoice] = hourChoice;
+
+    cout << "\nPlanning for " << monthNames[monthChoice - 1] << " "
+         << dayChoice << " at " << hourConvert(hourChoice) << "..." << endl;
+    cout << "\nWhat minutes go with your hour? (00, 15, 30, 45...): ";
+    cin.clear();
+    while(!(cin >> minChoice) || minChoice < 0 || minChoice > 59)
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Please enter a valid option: ";
+        }
+    
+    cout << "What is the name of your event on " << monthNames[monthChoice - 1] << " "
+         << dayChoice << " at " << hourConvert(hourChoice) << "? ";
+
+    getline(cin, eventNameChoice);
+    //cin >> eventNameChoice;
+
+    //Assignment to arrays
+    eventPresent[monthChoice][dayChoice] = true;
+    eventName[monthChoice][dayChoice] = eventNameChoice;
+    eventHour[monthChoice][dayChoice] = hourChoice;
+    eventMin[monthChoice][dayChoice] = minChoice;
+
+    cout << "Your event, " << eventName[monthChoice-1][dayChoice-1] << ", on " << monthNames[monthChoice - 1] << " "
+         << dayChoice << " at " << hourConvert(hourChoice) << " ";
+         getMeridian(hourChoice);
+         cout << " is set.";
+    return;
+}
+******************************FUNCTION GRAVEYARD*********************************/
