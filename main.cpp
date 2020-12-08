@@ -24,9 +24,9 @@ const int DAYS = 31;
 void displayMenu(bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[][DAYS],
                  string eventName[][DAYS], string monthNames[MONTHS]);
 void loadUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
-                  int eventHour[][DAYS], int eventMin[][DAYS]);
+                  int eventHour[][DAYS], int eventMin[][DAYS], bool &leapYear, bool &leapYearSet);
 void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
-                  int eventHour[][DAYS], int eventMin[][DAYS]);
+                  int eventHour[][DAYS], int eventMin[][DAYS], bool leapYear);
 
 // Support Function Prototypes
 void displayMonths();
@@ -133,12 +133,12 @@ int main()
             }
             case 4:
             {
-                loadUserData(eventPresent, eventNames, eventHour, eventMin);
+                loadUserData(eventPresent, eventNames, eventHour, eventMin, leapYear, leapYearSet);
                 break;
             }
             case 5:
             {
-                saveUserData(eventPresent, eventNames, eventHour, eventMin);
+                saveUserData(eventPresent, eventNames, eventHour, eventMin, leapYear);
                 break;
             }
             case 0:
@@ -222,6 +222,7 @@ void displayMenu(bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[
         }
         case 2:
         {
+            cout << "\n\n-------------------------------Display All Events-------------------------------\n\n";
             displayMonths();
             cout << "Which month would you like to display? (1-12, or 0 to Cancel): ";
             
@@ -275,19 +276,20 @@ void getMeridian(int hour)
 }
 
 void loadUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
-                  int eventHour[][DAYS], int eventMin[][DAYS])
+                  int eventHour[][DAYS], int eventMin[][DAYS], bool &leapYear, bool &leapYearSet)
 {
     int userChoice;
     string line;
 
     // Establish ifstream objects
-    ifstream readEventPresent, readEventName, readEventHour, readEventMin;
+    ifstream readEventPresent, readEventName, readEventHour, readEventMin, readLeapYear;
 
     // Open associated text files
     readEventPresent.open("eventPresent.txt");
     readEventName.open("eventName.txt");
     readEventHour.open("eventHour.txt");
     readEventMin.open("eventMin.txt");
+    readLeapYear.open("leapYear.txt");
 
     cout << "\n\n------------------------------------Load Data-----------------------------------\n\n";
     cout << "1. Load Data" << endl
@@ -312,12 +314,16 @@ void loadUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
                     readEventHour >> eventHour[m][d];
                     readEventMin >> eventMin[m][d];
                     getline(readEventName, line);
+                    eventNames[m][d] = line;
+                    readLeapYear >> leapYear;
                 }
             }
+            leapYearSet = true;
             readEventPresent.close();
             readEventName.close();
             readEventHour.close();
             readEventMin.close();
+            readLeapYear.close();
             break;
         }
         case 2: break;
@@ -326,16 +332,17 @@ void loadUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
 }
 
 void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
-                  int eventHour[][DAYS], int eventMin[][DAYS])
+                  int eventHour[][DAYS], int eventMin[][DAYS], bool leapYear)
 {
     int userChoice;
 
-    ofstream writeEventPresent, writeEventName, writeEventHour, writeEventMin;
+    ofstream writeEventPresent, writeEventName, writeEventHour, writeEventMin, writeLeapYear;
 
     writeEventPresent.open("eventPresent.txt");
     writeEventName.open("eventName.txt");
     writeEventHour.open("eventHour.txt");
     writeEventMin.open("eventMin.txt");
+    writeLeapYear.open("leapYear.txt");
 
     cout << "\n\n------------------------------------Save Data-----------------------------------\n\n";
     cout << "1. Save Data" << endl
@@ -360,13 +367,15 @@ void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
                     writeEventPresent << eventPresent[m][d] << endl;
                     writeEventHour << eventHour[m][d] << endl;
                     writeEventMin << eventMin[m][d] << endl;
-                    writeEventName << eventNames[m][d] << endl;                    
+                    writeEventName << eventNames[m][d] << endl;
+                    writeLeapYear << leapYear << endl;
                 }
             }
             writeEventPresent.close();
             writeEventName.close();
             writeEventHour.close();
             writeEventMin.close();
+            writeLeapYear.close();
             break;
         }
         case 2: break;
