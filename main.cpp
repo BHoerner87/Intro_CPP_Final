@@ -34,6 +34,18 @@ void setLeapYear(int &, bool &);    // Checks for year, sets whether leap-year f
 int hourConvert(int);
 void getMeridian(int);
 
+// Add Event Function Prototypes
+int monthChoice();
+int monthDaysCheck(int, bool);
+int dayChoice(int);
+int hourChoice();
+int minuteChoice(int);
+string getName();
+void eventMake(// Arrays
+               bool [][DAYS], int [][DAYS], int [][DAYS],
+               string [MONTHS], string [][DAYS],
+               // Variables
+               int, int, int, int, string);
 
 int main()
 {
@@ -93,9 +105,24 @@ int main()
                 {
                     setLeapYear(year, leapYear);
                     leapYearSet = true;
-                    //Fill in addEvent Stuff
-                    break;
                 }
+                
+                cout << "\n\n------------------------------------Add Event-----------------------------------\n\n";
+                displayMonths();
+                cout << "Please start by choosing a month for your event (1-12): ";
+
+                month = monthChoice();
+                dayCount = monthDaysCheck(month, leapYear);
+                day = dayChoice(dayCount);
+                hour = hourChoice();
+                minutes = minuteChoice(hour);
+                eventNameVar = getName();
+                eventMake(// Arrays
+                    eventPresent, eventHour, eventMin,
+                    monthNames, eventNames,
+                    // Variables
+                    month, day, hour, minutes, eventNameVar);
+                break;
             }
             case 2: //Fill in removeEvent Stuff
                 break;
@@ -112,7 +139,10 @@ int main()
             case 5:
             {
                 saveUserData(eventPresent, eventNames, eventHour, eventMin);
+                break;
             }
+            case 0:
+                dummyStop = true;
         }
     } while(dummyStop != true);
     monthData.close();              // Moving to the end of the program.
@@ -178,10 +208,10 @@ void displayMenu(bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[
                 {
                     if(eventPresent[m][d] == true)
                     {
-                        cout << (eventCounter + 1) << ". " << eventNames[m][d] << "on " << monthNames[m]
-                             << " at " << hourConvert(eventHour[m][d]) << ":" << setw(2) << setfill('0')
-                             << eventMin[m][d] << " " << setfill(' ');
-                        //getMeridian(eventHour[monthChoice - 1][d]);
+                        cout << (eventCounter + 1) << ". " << eventNames[m][d] << " on " << monthNames[m]
+                             << " " << (d + 1) << " at " << hourConvert(eventHour[m][d]) << ":" << setw(2)
+                             << setfill('0') << eventMin[m][d] << " " << setfill(' ');
+                        getMeridian(eventHour[m][d]);
                         cout << endl;
                         eventCounter++;
                     }
@@ -203,10 +233,10 @@ void displayMenu(bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[
             }
             for(int d = 0; d < DAYS; d++)
             {
-                if(eventPresent[monthChoice - 1][DAYS])
+                if(eventPresent[monthChoice - 1][d])
                 {
                     cout << (eventCounter + 1) << ". " << eventNames[monthChoice -1][d] << " on "
-                         << monthNames[monthChoice - 1][d] << " " << (d + 1) << " at "
+                         << monthNames[monthChoice - 1] << " " << (d + 1) << " at "
                          << hourConvert(eventHour[monthChoice - 1][d]) << ":"
                          << eventMin[monthChoice - 1][d] << " ";
                     getMeridian(eventHour[monthChoice - 1][d]);
@@ -352,7 +382,122 @@ void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
     return;
 }
 
+// Add Event Functions
+int monthChoice()
+{
+    int userChoice;
 
+    while(!(cin >> userChoice || userChoice < 1 || userChoice > 12))
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    return userChoice;
+}
+
+int monthDaysCheck(int month, bool leapYear)
+{
+    int daysCount;
+    if(month == 2)
+    {
+        if(leapYear)
+        {
+            daysCount = 29;
+        }
+        else
+        {
+            daysCount = 28;
+        }
+    }
+    else if(month == 4 || month == 6 || month == 9 || month == 11)
+    {
+        daysCount = 30;
+    }
+    else
+    {
+        daysCount = 31;
+    }
+    return daysCount;
+    
+}
+
+int dayChoice(int dayCount)
+{
+    cout << "\nOn what day does your event occur? ";
+    int userChoice;
+
+    while(!(cin >> userChoice) || userChoice < 1 || userChoice > dayCount)
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    return userChoice;
+}
+
+int hourChoice()
+{
+    int userChoice;
+    cout << "\nAt what hour does your event occur?" << endl
+         << "\nPlease enter the hour in 24-hour format (military time) and" << endl
+         << "the software will convert it to AM/PM for you: ";
+    while(!(cin >> userChoice) || userChoice < 0 || userChoice > 23)
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    return userChoice;
+}
+
+int minuteChoice(int hour)
+{
+    int userChoice;
+    cout << "\nIs there a more specific time? " << hourConvert(hour) << ":15? "
+         << hourConvert(hour) << ":30? etc..." << endl << endl;
+    cout << "Please add minutes: ";
+
+    while(!(cin >> userChoice) || userChoice < 0 || userChoice > 59)
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    return userChoice;
+}
+
+string getName()
+{
+    string eventName;
+    cout << "\nPlease enter the name of your event: ";
+    cin.ignore();
+    getline(cin, eventName);
+    return eventName;
+}
+
+void eventMake(// Arrays
+               bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[][DAYS],
+               string monthNames[MONTHS], string eventNames[][DAYS],
+               // Variables
+               int month, int day, int hour, int minutes, string eventNameVar)
+{
+    cout << "\nGreat. Your event, " << eventNameVar << ", is scheduled for\n";
+    cout << monthNames[month - 1] << " " << day << ", at ";
+    cout << hourConvert(hour);
+    cout << ":" << setw(2) << setfill('0') << minutes << setfill(' ') << " ";
+    getMeridian(hour);
+    cout << ". \n\nPress 'Enter' to return to the Main Menu...Don't forget to save!";
+    cin.get();
+
+    // Putting everything away
+    eventPresent[month - 1][day - 1] = true;
+    eventNames[month - 1][day - 1] = eventNameVar;
+    eventHour[month - 1][day - 1] = hour;
+    eventMin[month - 1][day - 1] = minutes;
+
+    //Clear variables for next time
+}
 /*
 #include <iostream>
 #include <iomanip>
