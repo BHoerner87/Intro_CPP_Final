@@ -23,7 +23,7 @@ const int DAYS = 31;
 // Main Function Prototypes
 void displayMenu(bool [][DAYS], int [][DAYS], int [][DAYS], string [][DAYS], string [MONTHS]);
 void loadUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], bool &, bool &);
-void saveUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], bool, bool);
+void saveUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], bool, bool &);
 void removeEvent(bool [][DAYS], int eventHour[][DAYS], int [][DAYS], string [MONTHS], string [][DAYS]);
 
 // Support Function Prototypes
@@ -249,6 +249,7 @@ void displayMenu(bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[
                 cout << "There are no events to display." << endl;
             eventCounter = 0;
             cout << "\nPress 'Enter' to return to Main Menu...\n";
+            cin.ignore(1000, '\n');
             cin.get();
             break;
         }
@@ -282,6 +283,9 @@ void displayMenu(bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[
             }
             if(eventCounter == 0)
                 cout << "There are no events to display for this month." << endl;
+            cout << "\nPress 'Enter' to return to Main Menu...\n";
+            cin.ignore(1000, '\n');
+            cin.get();
             eventCounter = 0;
             break;
         }
@@ -361,6 +365,11 @@ void loadUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
             readEventHour.close();
             readEventMin.close();
             readLeapYear.close();
+            cout << "\n\n-----------------------------------Data Loaded----------------------------------\n\n";
+            cout << "Data loaded successfully!" << endl;
+            cout << "\nPress 'Enter' to return to Main Menu...\n";
+            cin.ignore(1000, '\n');
+            cin.get();
             break;
         }
         case 2: break;
@@ -369,7 +378,7 @@ void loadUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
 }
 
 void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
-                  int eventHour[][DAYS], int eventMin[][DAYS], bool leapYear, bool unsavedChanges)
+                  int eventHour[][DAYS], int eventMin[][DAYS], bool leapYear, bool &unsavedChanges)
 {
     int userChoice;
 
@@ -415,7 +424,9 @@ void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
             writeEventMin.close();
             writeLeapYear.close();
             
-            cout << "Data saved! Press 'Enter' to continue...";
+            cout << "\n\n-----------------------------------Data Saved-----------------------------------\n\n";
+            cout << "Data saved! Press 'Enter' to continue...\n";
+            cin.ignore(1000, '\n');
             cin.get();
             unsavedChanges = false;
             break;
@@ -576,7 +587,8 @@ void removeEvent(// Arrays
     if(eventAccumulator == 0)
     {
         cout << "\nYou don't have any events in this month." << endl
-             << "Press 'Enter' to return to the Main Menu...";
+             << "Press 'Enter' to return to the Main Menu...\n";
+        cin.ignore(1000, '\n');
         cin.get();
         return;
     }
@@ -588,8 +600,8 @@ void removeEvent(// Arrays
             {
                 cout << (eventCounter + 1) << ". " << eventNames[month -1][d] << " on "
                     << monthNames[month - 1] << " " << (d + 1) << " at "
-                    << hourConvert(eventHour[month - 1][d]) << ":"
-                    << eventMin[month - 1][d] << " ";
+                    << hourConvert(eventHour[month - 1][d]) << ":" << setw(2) << setfill('0')
+                    << eventMin[month - 1][d] << setfill(' ') << " ";
                 getMeridian(eventHour[month - 1][d]);
                 cout << endl;
                 eventCounter++;
@@ -598,7 +610,7 @@ void removeEvent(// Arrays
         eventCounter = 0;
 
     cout << "\nYou have " << eventAccumulator << " events in " << monthNames[userChoice - 1] << "."
-         << endl << endl << "Which would you like to remove? (1 - " << eventAccumulator
+         << endl << endl << "Which would you like to remove? (1-" << eventAccumulator
          << " or 0 to Cancel...)" << endl;
 
     while(!(cin >> userChoice) || userChoice < 0 || userChoice > eventAccumulator)
@@ -617,6 +629,10 @@ void removeEvent(// Arrays
         if(removalCounter == day)
             eventPresent[month - 1][d - 1] = false;
     }
+    cout << "\nEvent successfully removed!" << endl
+         << "Press 'Enter' to return to the Main Menu...";
+    cin.ignore(1000, '\n');
+    cin.get();
     return;
 }
 
