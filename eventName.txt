@@ -57,9 +57,11 @@
 
 
 
+Demo Event
 
 
 
+Mom's Birthday
 
 
 
@@ -112,6 +114,7 @@
 
 
 
+Kris's Birthday
 
 
 
@@ -246,9 +249,6 @@
 
 
 
-
-
-Emily's Birthday
 
 
 

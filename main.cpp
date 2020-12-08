@@ -21,12 +21,9 @@ const int MONTHS = 12;
 const int DAYS = 31;
 
 // Main Function Prototypes
-void displayMenu(bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[][DAYS],
-                 string eventName[][DAYS], string monthNames[MONTHS]);
-void loadUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
-                  int eventHour[][DAYS], int eventMin[][DAYS], bool &leapYear, bool &leapYearSet);
-void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
-                  int eventHour[][DAYS], int eventMin[][DAYS], bool leapYear);
+void displayMenu(bool [][DAYS], int [][DAYS], int [][DAYS], string [][DAYS], string [MONTHS]);
+void loadUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], bool &, bool &);
+void saveUserData(bool [][DAYS], string [][DAYS], int [][DAYS], int [][DAYS], bool, bool);
 void removeEvent(bool [][DAYS], int eventHour[][DAYS], int [][DAYS], string [MONTHS], string [][DAYS]);
 
 // Support Function Prototypes
@@ -41,6 +38,7 @@ int monthDaysCheck(int, bool);
 int dayChoice(int);
 int hourChoice();
 int minuteChoice(int);
+int saveChoice;
 string getName();
 void eventMake(// Arrays
                bool [][DAYS], int [][DAYS], int [][DAYS], string [MONTHS], string [][DAYS],
@@ -65,7 +63,7 @@ int main()
     bool leapYearSet = false;       // Whether a leap year has been set
     bool leapYear;                  // Whether it is or is not a leap year
     bool dummyStop;                 // Temp named variable for ending main menu
-    bool unsavedChanges = false;    // *****Currently unused*****
+    bool unsavedChanges = false;    // Prompts user to save if they haven't before quitting
 
     string eventNameVar;            // Storage for event name in string variable
 
@@ -107,7 +105,7 @@ int main()
                     leapYearSet = true;
                 }
                 
-                cout << "\n\n------------------------------------Add Event-----------------------------------\n\n";
+                cout << "\n\n------------------------------------Add Event-----------------------------------\n\n\n";
                 displayMonths();
                 cout << "Please start by choosing a month for your event (1-12): ";
 
@@ -121,6 +119,7 @@ int main()
                     eventPresent, eventHour, eventMin, monthNames, eventNames,
                     // Variables
                     month, day, hour, minutes, eventNameVar);
+                unsavedChanges = true;
                 break;
             }
             case 2:
@@ -140,15 +139,40 @@ int main()
             }
             case 5:
             {
-                saveUserData(eventPresent, eventNames, eventHour, eventMin, leapYear);
+                saveUserData(eventPresent, eventNames, eventHour, eventMin, leapYear, unsavedChanges);
                 break;
             }
             case 0:
-                dummyStop = true;
+                if(unsavedChanges == true)
+                {
+                    cout << "\n\n--------------------------------Unsaved Changes!--------------------------------\n\n\n";
+                    cout << "1. Yes, Quit." << endl
+                         << "2. No, stay in program." << endl << endl
+                         << "You have unsaved changes. Are you sure you want to quit? ";
+                    while(!(cin >> saveChoice) || saveChoice < 1 || saveChoice > 2)
+                    {
+                        cin.clear();
+                        cin.ignore(1000, '\n');
+                        cout << "Please enter a valid option: ";
+                    }
+                    switch(saveChoice)
+                    {
+                        case 1: 
+                            dummyStop = true;
+                            break;
+                        case 2: break;
+                    }
+                }
+                else
+                {
+                    dummyStop = true;
+                }
         }
     } while(dummyStop != true);
     monthData.close();              // Moving to the end of the program.
-    // Write an exit message
+    cout << "\n\n------------------------------------Goodbye!------------------------------------\n\n";
+    cout << "\nThank you for using this software!\n\n";
+    return 0;
 }
 
 // Functions
@@ -161,6 +185,7 @@ void displayMonths()
 }
 void setLeapYear(int &year, bool &leapYear)
 {
+    cout << "\n\n-----------------------------------Year Check-----------------------------------\n\n";
     cout << "\nPlease enter the year for this calendar: ";
     while(!(cin >> year) || year < 2020 || year > 2099)
     {
@@ -204,7 +229,7 @@ void displayMenu(bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[
     {
         case 1:
         {
-            cout << "\n\n-------------------------------Display All Events-------------------------------\n\n";
+            cout << "\n\n-------------------------------Display All Events-------------------------------\n\n\n";
             for(int m = 0; m < MONTHS; m++)
             {
                 for(int d = 0; d < DAYS; d++)
@@ -220,12 +245,16 @@ void displayMenu(bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[
                     }
                 }
             }
+            if(eventCounter == 0)
+                cout << "There are no events to display." << endl;
             eventCounter = 0;
+            cout << "\nPress 'Enter' to return to Main Menu...\n";
+            cin.get();
             break;
         }
         case 2:
         {
-            cout << "\n\n-------------------------------Display All Events-------------------------------\n\n";
+            cout << "\n\n-----------------------------Display Events By Month----------------------------\n\n\n";
             displayMonths();
             cout << "Which month would you like to display? (1-12, or 0 to Cancel): ";
             
@@ -235,19 +264,24 @@ void displayMenu(bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[
                 cin.ignore(1000, '\n');
                 cout << "Please enter a valid option: ";
             }
+
+            cout << "\n\n-----------------------------Display Events By Month----------------------------\n\n\n";
+
             for(int d = 0; d < DAYS; d++)
             {
                 if(eventPresent[monthChoice - 1][d])
                 {
                     cout << (eventCounter + 1) << ". " << eventNames[monthChoice -1][d] << " on "
                          << monthNames[monthChoice - 1] << " " << (d + 1) << " at "
-                         << hourConvert(eventHour[monthChoice - 1][d]) << ":"
-                         << eventMin[monthChoice - 1][d] << " ";
+                         << hourConvert(eventHour[monthChoice - 1][d]) << ":" << setw(2)
+                         << setfill('0') << eventMin[monthChoice - 1][d] << setfill(' ') << " ";
                     getMeridian(eventHour[monthChoice - 1][d]);
                     cout << endl;
                     eventCounter++;
                 }
             }
+            if(eventCounter == 0)
+                cout << "There are no events to display for this month." << endl;
             eventCounter = 0;
             break;
         }
@@ -335,7 +369,7 @@ void loadUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
 }
 
 void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
-                  int eventHour[][DAYS], int eventMin[][DAYS], bool leapYear)
+                  int eventHour[][DAYS], int eventMin[][DAYS], bool leapYear, bool unsavedChanges)
 {
     int userChoice;
 
@@ -350,7 +384,8 @@ void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
     cout << "\n\n------------------------------------Save Data-----------------------------------\n\n";
     cout << "1. Save Data" << endl
          << "2. Cancel" << endl << endl;
-    cout << "Would you like to save your calendar data? (1-2): " << endl;
+    cout << "Would you like to save your calendar data? (1-2)" << endl;
+    cout << "(This will overwrite ALL previous data): ";
     
     while(!(cin >> userChoice) || userChoice < 0 || userChoice > 2)
     {
@@ -379,6 +414,10 @@ void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
             writeEventHour.close();
             writeEventMin.close();
             writeLeapYear.close();
+            
+            cout << "Data saved! Press 'Enter' to continue...";
+            cin.get();
+            unsavedChanges = false;
             break;
         }
         case 2: break;
@@ -486,7 +525,8 @@ void eventMake(// Arrays
                // Variables
                int month, int day, int hour, int minutes, string eventNameVar)
 {
-    cout << "\nGreat. Your event, " << eventNameVar << ", is scheduled for\n";
+    cout << "\n\n---------------------------------Event Scheduled--------------------------------\n\n";
+    cout << "\nYour event, " << eventNameVar << ", is scheduled for\n";
     cout << monthNames[month - 1] << " " << day << ", at ";
     cout << hourConvert(hour);
     cout << ":" << setw(2) << setfill('0') << minutes << setfill(' ') << " ";
