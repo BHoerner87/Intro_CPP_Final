@@ -513,6 +513,7 @@ void removeEvent(// Arrays
     int userChoice;
     int eventAccumulator = 0;
     int eventCounter = 0;
+    int removalCounter = 0;
 
     cout << "\n\n----------------------------------Remove Event----------------------------------\n\n";
     displayMonths();
@@ -539,26 +540,26 @@ void removeEvent(// Arrays
         cin.get();
         return;
     }
-    
+
+    int month = userChoice;
     for(int d = 0; d < DAYS; d++)
         {
-            if(eventPresent[userChoice - 1][d])
+            if(eventPresent[month - 1][d])
             {
-                cout << (eventCounter + 1) << ". " << eventNames[userChoice -1][d] << " on "
-                    << monthNames[userChoice - 1] << " " << (d + 1) << " at "
-                    << hourConvert(eventHour[userChoice - 1][d]) << ":"
-                    << eventMin[userChoice - 1][d] << " ";
-                getMeridian(eventHour[userChoice - 1][d]);
+                cout << (eventCounter + 1) << ". " << eventNames[month -1][d] << " on "
+                    << monthNames[month - 1] << " " << (d + 1) << " at "
+                    << hourConvert(eventHour[month - 1][d]) << ":"
+                    << eventMin[month - 1][d] << " ";
+                getMeridian(eventHour[month - 1][d]);
                 cout << endl;
                 eventCounter++;
             }
         }
         eventCounter = 0;
 
-    cout << "You have " << eventAccumulator << " events in " << monthNames[userChoice - 1] << "."
+    cout << "\nYou have " << eventAccumulator << " events in " << monthNames[userChoice - 1] << "."
          << endl << endl << "Which would you like to remove? (1 - " << eventAccumulator
-         << " or 0 to Cancel..." << endl;
-    int month = userChoice;
+         << " or 0 to Cancel...)" << endl;
 
     while(!(cin >> userChoice) || userChoice < 0 || userChoice > eventAccumulator)
     {
@@ -567,8 +568,16 @@ void removeEvent(// Arrays
         cout << "Please enter a valid option: ";
     }
     if(userChoice == 0) return;
-
     
+    int day = userChoice;
+    for(int d = 0; d < DAYS; d++)
+    {
+        if(eventPresent[month - 1][d])
+            removalCounter++;
+        if(removalCounter == day)
+            eventPresent[month - 1][d - 1] = false;
+    }
+    return;
 }
 
 /*
