@@ -27,6 +27,7 @@ void loadUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
                   int eventHour[][DAYS], int eventMin[][DAYS], bool &leapYear, bool &leapYearSet);
 void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
                   int eventHour[][DAYS], int eventMin[][DAYS], bool leapYear);
+void removeEvent(bool [][DAYS], int eventHour[][DAYS], int [][DAYS], string [MONTHS], string [][DAYS]);
 
 // Support Function Prototypes
 void displayMonths();
@@ -42,8 +43,7 @@ int hourChoice();
 int minuteChoice(int);
 string getName();
 void eventMake(// Arrays
-               bool [][DAYS], int [][DAYS], int [][DAYS],
-               string [MONTHS], string [][DAYS],
+               bool [][DAYS], int [][DAYS], int [][DAYS], string [MONTHS], string [][DAYS],
                // Variables
                int, int, int, int, string);
 
@@ -118,14 +118,16 @@ int main()
                 minutes = minuteChoice(hour);
                 eventNameVar = getName();
                 eventMake(// Arrays
-                    eventPresent, eventHour, eventMin,
-                    monthNames, eventNames,
+                    eventPresent, eventHour, eventMin, monthNames, eventNames,
                     // Variables
                     month, day, hour, minutes, eventNameVar);
                 break;
             }
-            case 2: //Fill in removeEvent Stuff
+            case 2:
+            {
+                removeEvent(eventPresent, eventHour, eventMin, monthNames, eventNames);
                 break;
+            }
             case 3: 
             {
                 displayMenu(eventPresent, eventHour, eventMin, eventNames, monthNames);
@@ -146,6 +148,7 @@ int main()
         }
     } while(dummyStop != true);
     monthData.close();              // Moving to the end of the program.
+    // Write an exit message
 }
 
 // Functions
@@ -499,6 +502,75 @@ void eventMake(// Arrays
 
     //Clear variables for next time
 }
+
+void removeEvent(// Arrays
+               bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[][DAYS],
+               string monthNames[MONTHS], string eventNames[][DAYS]//,
+               // Variables
+               //int month, int day, int hour, int minutes, string eventNameVar
+               )
+{
+    int userChoice;
+    int eventAccumulator = 0;
+    int eventCounter = 0;
+
+    cout << "\n\n----------------------------------Remove Event----------------------------------\n\n";
+    displayMonths();
+    cout << "In which month is the event you want to remove? (1-12 or 0 to Cancel): ";
+    while(!(cin >> userChoice) || userChoice < 0 || userChoice > 12)
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    cout << endl;
+    
+    for(int d = 0; d < DAYS; d++)
+        {
+            if(eventPresent[userChoice - 1][d])
+            {
+                eventAccumulator++;
+            }
+        }
+    if(eventAccumulator == 0)
+    {
+        cout << "\nYou don't have any events in this month." << endl
+             << "Press 'Enter' to return to the Main Menu...";
+        cin.get();
+        return;
+    }
+    
+    for(int d = 0; d < DAYS; d++)
+        {
+            if(eventPresent[userChoice - 1][d])
+            {
+                cout << (eventCounter + 1) << ". " << eventNames[userChoice -1][d] << " on "
+                    << monthNames[userChoice - 1] << " " << (d + 1) << " at "
+                    << hourConvert(eventHour[userChoice - 1][d]) << ":"
+                    << eventMin[userChoice - 1][d] << " ";
+                getMeridian(eventHour[userChoice - 1][d]);
+                cout << endl;
+                eventCounter++;
+            }
+        }
+        eventCounter = 0;
+
+    cout << "You have " << eventAccumulator << " events in " << monthNames[userChoice - 1] << "."
+         << endl << endl << "Which would you like to remove? (1 - " << eventAccumulator
+         << " or 0 to Cancel..." << endl;
+    int month = userChoice;
+
+    while(!(cin >> userChoice) || userChoice < 0 || userChoice > eventAccumulator)
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    if(userChoice == 0) return;
+
+    
+}
+
 /*
 #include <iostream>
 #include <iomanip>
