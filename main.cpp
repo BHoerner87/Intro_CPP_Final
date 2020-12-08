@@ -360,15 +360,7 @@ void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
                     writeEventPresent << eventPresent[m][d] << endl;
                     writeEventHour << eventHour[m][d] << endl;
                     writeEventMin << eventMin[m][d] << endl;
-                    if(writeEventName << eventNames[m][d])
-                    {
-                        writeEventName << eventNames[m][d] << endl;
-                    }
-                    else
-                    {
-                        cout << "\n" << eventNames[m][d];
-                    }
-                    
+                    writeEventName << eventNames[m][d] << endl;                    
                 }
             }
             writeEventPresent.close();
