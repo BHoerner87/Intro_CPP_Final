@@ -4,6 +4,356 @@
 // This is an event planning software that operates as a standard calendar.
 // Users can add, remove, and view events.
 
+
+/***********************************ReWrite********************************/
+// Below is a re-write to try and clean up the program and wrap my head
+// around where I'm actually at in it, progress-wise.
+
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <fstream>
+
+using namespace std;
+
+// Global Constants
+const int MONTHS = 12;
+const int DAYS = 31;
+
+// Main Function Prototypes
+void displayMenu(bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[][DAYS],
+                 string eventName[][DAYS], string monthNames[MONTHS]);
+void loadUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
+                  int eventHour[][DAYS], int eventMin[][DAYS]);
+void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
+                  int eventHour[][DAYS], int eventMin[][DAYS]);
+
+// Support Function Prototypes
+void displayMonths();
+void setLeapYear(int &, bool &);    // Checks for year, sets whether leap-year for February-related considerations
+int hourConvert(int);
+void getMeridian(int);
+
+
+int main()
+{
+    // Arrays
+    bool eventPresent[MONTHS][DAYS];
+    int eventHour[MONTHS][DAYS];
+    int eventMin[MONTHS][DAYS];
+    string monthNames[MONTHS];
+    string eventNames[MONTHS][DAYS];
+
+    // Variables
+    int userChoice;                 // Menu Selection
+    int month, day, hour, minutes;  // Inform array assignment / lookup
+    int dayCount;                   // Count of days in a month (28, 29, 30, 31)
+    int year;                       // Informs setLeapYear
+
+    bool leapYearSet = false;       // Whether a leap year has been set
+    bool leapYear;                  // Whether it is or is not a leap year
+    bool dummyStop;                 // Temp named variable for ending main menu
+    bool unsavedChanges = false;    // *****Currently unused*****
+
+    string eventNameVar;            // Storage for event name in string variable
+
+    // Load Month Names in from txt file before starting
+    ifstream monthData;
+    monthData.open("months.txt");
+    for(int i = 0; i < MONTHS; i++)
+    {
+        monthData >> monthNames[i];
+    }
+    // monthData.close();
+
+    do
+    {
+        cout << "\n\n----------------------------------Event Planner---------------------------------\n\n";
+        cout << "Main Menu" << endl << endl;
+        cout << "1. Add Event" << endl
+             << "2. Remove Event" << endl
+             << "3. Display Events" << endl
+             << "4. Load Events" << endl
+             << "5. Save Events" << endl << endl
+             << "0. Quit" << endl << endl;
+        cout << "Please choose from the items above (1-5, or 0 to Quit): ";
+
+        while(!(cin >> userChoice) || userChoice < 0 || userChoice > 5)     //Get, validate userChoice
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Please enter a valid option: ";
+        }
+
+        switch(userChoice)          // Main Menu options
+        {
+            case 1:
+            {
+                if(leapYearSet == false)
+                {
+                    setLeapYear(year, leapYear);
+                    leapYearSet = true;
+                    //Fill in addEvent Stuff
+                    break;
+                }
+            }
+            case 2: //Fill in removeEvent Stuff
+                break;
+            case 3: 
+            {
+                displayMenu(eventPresent, eventHour, eventMin, eventNames, monthNames);
+                break;
+            }
+            case 4:
+            {
+                loadUserData(eventPresent, eventNames, eventHour, eventMin);
+                break;
+            }
+            case 5:
+            {
+                saveUserData(eventPresent, eventNames, eventHour, eventMin);
+            }
+        }
+    } while(dummyStop != true);
+    monthData.close();              // Moving to the end of the program.
+}
+
+// Functions
+void displayMonths()
+{
+    cout << setw(20) << left << "1. January" << setw(20) << "2. February" << setw(20) << "3. March" << setw(20) << "4. April" << endl
+         << setw(20) << "5. May" << setw(20) << "6. June" << setw(20) << "7. July" << setw(20) << "8. August" << endl
+         << setw(20) << "9. September" << setw(20) << "10. October" << setw(20) << "11. November" << setw(20) << "12. December"
+         << endl << endl;
+}
+void setLeapYear(int &year, bool &leapYear)
+{
+    cout << "\nPlease enter the year for this calendar: ";
+    while(!(cin >> year) || year < 2020 || year > 2099)
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    
+    if(year % 4 == 0)
+    {
+        leapYear = true;
+        return;
+    }
+    else
+    {
+        leapYear = false;
+        return;
+    }
+    
+}
+void displayMenu(bool eventPresent[][DAYS], int eventHour[][DAYS], int eventMin[][DAYS],
+                 string eventNames[][DAYS], string monthNames[MONTHS])
+{
+    int userChoice;
+    int monthChoice;
+    int eventCounter = 0;
+
+    cout << "\n\n----------------------------------Display Menu----------------------------------\n\n";
+    cout << "1. Display All Events" << endl
+         << "2. Display Events by Month" << endl << endl
+         << "0. Cancel" << endl << endl;
+    cout << "Please enter your choice: ";
+
+    while(!(cin >> userChoice) || userChoice < 0 || userChoice > 2)
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    switch(userChoice)
+    {
+        case 1:
+        {
+            cout << "\n\n-------------------------------Display All Events-------------------------------\n\n";
+            for(int m = 0; m < MONTHS; m++)
+            {
+                for(int d = 0; d < DAYS; d++)
+                {
+                    if(eventPresent[m][d] == true)
+                    {
+                        cout << (eventCounter + 1) << ". " << eventNames[m][d] << "on " << monthNames[m]
+                             << " at " << hourConvert(eventHour[m][d]) << ":" << setw(2) << setfill('0')
+                             << eventMin[m][d] << " " << setfill(' ');
+                        //getMeridian(eventHour[monthChoice - 1][d]);
+                        cout << endl;
+                        eventCounter++;
+                    }
+                }
+            }
+            eventCounter = 0;
+            break;
+        }
+        case 2:
+        {
+            displayMonths();
+            cout << "Which month would you like to display? (1-12, or 0 to Cancel): ";
+            
+            while(!(cin >> monthChoice) || monthChoice < 0 || monthChoice > 13)
+            {
+                cin.clear();
+                cin.ignore(1000, '\n');
+                cout << "Please enter a valid option: ";
+            }
+            for(int d = 0; d < DAYS; d++)
+            {
+                if(eventPresent[monthChoice - 1][DAYS])
+                {
+                    cout << (eventCounter + 1) << ". " << eventNames[monthChoice -1][d] << " on "
+                         << monthNames[monthChoice - 1][d] << " " << (d + 1) << " at "
+                         << hourConvert(eventHour[monthChoice - 1][d]) << ":"
+                         << eventMin[monthChoice - 1][d] << " ";
+                    getMeridian(eventHour[monthChoice - 1][d]);
+                    cout << endl;
+                    eventCounter++;
+                }
+            }
+            eventCounter = 0;
+            break;
+        }
+        case 0: break;
+    }
+    return;
+}
+
+int hourConvert(int hour)
+{
+    if(hour > 12)
+    {
+        hour -= 12;
+    }
+    return hour;
+}
+
+void getMeridian(int hour)
+{
+    if(hour < 12)
+    {
+        cout << "AM";
+    }
+    else
+    {
+        cout << "PM";
+    }
+    return;
+}
+
+void loadUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
+                  int eventHour[][DAYS], int eventMin[][DAYS])
+{
+    int userChoice;
+    string line;
+
+    // Establish ifstream objects
+    ifstream readEventPresent, readEventName, readEventHour, readEventMin;
+
+    // Open associated text files
+    readEventPresent.open("eventPresent.txt");
+    readEventName.open("eventName.txt");
+    readEventHour.open("eventHour.txt");
+    readEventMin.open("eventMin.txt");
+
+    cout << "\n\n------------------------------------Load Data-----------------------------------\n\n";
+    cout << "1. Load Data" << endl
+         << "2. Cancel" << endl << endl;
+    cout << "Would you like to load your calendar data? (1-2): " << endl;
+
+    while(!(cin >> userChoice) || userChoice < 0 || userChoice > 2)
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+    switch(userChoice)
+    {
+        case 1:
+        {
+            for(int m = 0; m < MONTHS; m++)
+            {
+                for(int d = 0; d < DAYS; d++)
+                {
+                    readEventPresent >> eventPresent[m][d];
+                    readEventHour >> eventHour[m][d];
+                    readEventMin >> eventMin[m][d];
+                    getline(readEventName, line);
+                }
+            }
+            readEventPresent.close();
+            readEventName.close();
+            readEventHour.close();
+            readEventMin.close();
+            break;
+        }
+        case 2: break;
+    }
+    return;
+}
+
+void saveUserData(bool eventPresent[][DAYS], string eventNames[][DAYS],
+                  int eventHour[][DAYS], int eventMin[][DAYS])
+{
+    int userChoice;
+
+    ofstream writeEventPresent, writeEventName, writeEventHour, writeEventMin;
+
+    writeEventPresent.open("eventPresent.txt");
+    writeEventName.open("eventName.txt");
+    writeEventHour.open("eventHour.txt");
+    writeEventMin.open("eventMin.txt");
+
+    cout << "\n\n------------------------------------Save Data-----------------------------------\n\n";
+    cout << "1. Save Data" << endl
+         << "2. Cancel" << endl << endl;
+    cout << "Would you like to save your calendar data? (1-2): " << endl;
+    
+    while(!(cin >> userChoice) || userChoice < 0 || userChoice > 2)
+    {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter a valid option: ";
+    }
+
+    switch(userChoice)
+    {
+        case 1:
+        {
+            for(int m = 0; m < MONTHS; m++)
+            {
+                for(int d = 0; d < DAYS; d++)
+                {
+                    writeEventPresent << eventPresent[m][d] << endl;
+                    writeEventHour << eventHour[m][d] << endl;
+                    writeEventMin << eventMin[m][d] << endl;
+                    if(writeEventName << eventNames[m][d])
+                    {
+                        writeEventName << eventNames[m][d] << endl;
+                    }
+                    else
+                    {
+                        cout << "\n" << eventNames[m][d];
+                    }
+                    
+                }
+            }
+            writeEventPresent.close();
+            writeEventName.close();
+            writeEventHour.close();
+            writeEventMin.close();
+            break;
+        }
+        case 2: break;
+    }
+    return;
+}
+
+
+/*
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -258,7 +608,7 @@ void eventMake(// Arrays
         List events for month
         Which event? 1., 2., 3...
 */
-
+/*
 void displayMenu(bool eventPresent[][DAYS], string eventName[][DAYS],  // Reads all user data to several txt files
                   int eventHour[][DAYS], int eventMin[][DAYS], string monthNames[MONTHS])
 {
@@ -368,6 +718,7 @@ void getMeridian(int hour)
     {
         cout << "PM";
     }
+    return
 }
 
 void loadUserData(bool eventPresent[][DAYS], string eventName[][DAYS],  // Reads all user data to several txt files
@@ -470,6 +821,7 @@ void saveUserData(bool eventPresent[][DAYS], string eventName[][DAYS], // Writes
     return;
 }
 
+*/
 /******************************FUNCTION GRAVEYARD*********************************
  * 
 /*void monthReturn(int month, string monthNames[MONTHS])
